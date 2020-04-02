@@ -1,0 +1,624 @@
+<div class="card">
+        <div class="card-body">   
+            <div style="float: right">
+                <button class="btn btn-primary" style="margin-right:1rem;" (click)="childback()"> 돌아가기</button>
+                <button class="btn btn-danger" style="margin-right:1rem;" (click)="delete()"> 삭제</button> 
+                <button class="btn btn-success" style="margin-right:1rem;" (click)="save()" > 저장</button> 
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt9" style="color: red;">어린이집 명(필수)</label>
+                  <input name="faq_question" class="form-control" style="width:40em;" [(ngModel)]="childhome.daycare_nm"> 
+            </div>
+            
+            <div class="form-group">
+              <label class="search-title" class="wt9" >운영상태</label>
+                  <select class="form-control wt8" [(ngModel)]="childhome.oper_state">
+                  <option value="0">신청</option> <!-- *ngFor="let item of orgList" -->
+                  <option value="1">승인</option>
+                  <option value="9">폐쇄</option>
+                  </select>
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt9">운영자(원장)</label>
+                  <input name="faq_question" class="form-control" style="width:10em;" [(ngModel)]="childhome.ceo_nm" readonly> 
+                  <input type="hidden" [(ngModel)]="childhome.ceo_user_no"> <!-- DB에 값넣기용(운영자(원장)번호)-->
+                  <button class="btn btn-info" style="margin-left:1rem;" (click)="ceo_search(ceo_searchModal)">운영자검색</button>
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt9" >대표전화</label>
+                  <input name="faq_question" class="form-control" style="width:10em;" [(ngModel)]="childhome.tel" >
+            </div>
+            
+            <div class="form-group">
+                <label class="search-title" class="wt9">휴대전화</label>
+                <input name="faq_question" class="form-control" style="width:10em;" [(ngModel)]="childhome.ceo_cp_no">
+            </div>
+
+            <div class="form-group">
+                <label class="search-title" class="wt9">우편번호</label>
+                <input class="form-control" name="post" type="text" style="width:10em;" [(ngModel)]="childhome.post" />
+                <button type="button" class="btn btn-info" style="margin-left:1rem;" (click)="getPost()">우편번호 검색</button>
+            </div>
+            
+            <div class="form-group">
+              <label class="search-title" class="wt9">주소</label>
+                  <input name="faq_question" class="form-control" style="width:40em;" [(ngModel)]="childhome.addr" >
+                  <!-- <button class="btn btn-info" (click)="openMap(mapModal)" style="margin-left:1rem;">지도검색</button> -->
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt9">상세주소</label>
+                  <input name="faq_question" class="form-control" style="width:40em;" [(ngModel)]="childhome.addr2" >
+            </div>
+      
+            <div class="form-group">
+                <label class="search-title" class="wt9">지역</label>
+                <select class="form-control wt8" name="district_cd"  [(ngModel)]="childhome.district_cd"> 
+                  <option  *ngFor="let dist of district_nm;" [value]="dist.district_cd">{{dist.district_nm}}</option>
+              </select>
+            </div>
+            <div *ngIf="childhome.oper_state == 1"> <!-- response_daycare_no || no.daycare_no 원래는 어린이집번호가 있어야 반등록,교사등록.. 할 수 있었음 -->
+              <div class="form-group">
+                  <div class="d-flex flex-row row-mb align-items-center">
+                      <label class="search-title" class="wt9">반등록</label>
+                          <div> 
+                          <div class="table-responsive list-table" style="height:10rem;">
+                              <table style="text-align: center; ">
+                              <thead>
+                                  <tr>
+                                      <th style="width: 200px">반이름</th>
+                                      <th style="width: 50px">삭제</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let class of cls_list; let i = index;">
+                                  <td > {{class.cls_nm}}</td>  
+                                      <td>
+                                          <a *ngIf="class" (click)="classdelete(class);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                              </table>
+                          </div>
+                          </div>
+                      <button class="btn btn-dark" style="float: right; margin-left:1rem; margin-top: -2rem; margin-right: 10rem;" 
+                              (click)="classopen()">반등록</button>
+                  </div>
+                  <div class="d-flex flex-row row-mb align-items-center" *ngIf="class" style="margin-bottom: 3rem;">
+                      <label class="search-title" class="wt9"></label>
+                          <table style="border: 1px solid; width: 400px;">
+                              <tr style="border-bottom:1px solid;" >
+                                  <td colspan="2"><span style="font-size:1.7em;">&nbsp;&nbsp;반 등록</span>
+                                      <span style="float: right; font-size: 2rem;" (click)="classclose()">×</span>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td colspan="2" style="height: 30px;"></td>
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center;">반 이름</td>
+                                  <td><input type="text" style="width: 190px;" [(ngModel)]="cls_nm "></td> 
+                              <tr>
+                                  <td colspan="2">
+                                  <button type="button" class="btn btn-info" style="float: right; margin-left: 0.5rem;" (click)="classpost()">저장</button>
+                                  </td>
+                              </tr>
+                          </table>
+                  </div>      
+      
+                  <div class="d-flex flex-row row-mb align-items-center" >
+                      <label class="search-title" class="wt9">교사등록</label>
+                          <div> 
+                              <div class="table-responsive list-table" style="height:10rem;">
+                                  <table style="text-align: center; ">
+                                  <!-- <input #inputFile style="display: none;" (change)="checkFileType($event)" type="file"> -->
+                                  <thead>
+                                      <tr>
+                                          <th style="width: 100px">교사명</th>
+                                          <th style="width: 150px">아이디</th>
+                                          <th style="width: 200px">담당반</th>
+                                          <th style="width: 50px">삭제</th>
+                                      </tr>
+                                  </thead>
+                              <tbody>
+                                      <tr *ngFor="let staff of staff_list;let i = index;">
+                                          <td >{{staff.staff_user_nm}}</td>
+                                          <td >{{staff.login_accnt}}</td> 
+                                          <td >{{staff.cls_nm}}</td>
+                                          <td>
+                                          <a *ngIf="rfid_list" (click)="staffdelete(staff);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                          </td>
+                                      </tr>
+                              </tbody>
+                              </table>
+                          </div>               
+                      </div>
+                      <button class="btn btn-dark" style="float: right; margin-left:1rem; margin-top: -2rem" (click)="teacheropen()">교사등록</button> <!-- (click)="fileupload()" -->
+                  </div>
+      
+                  <div class="d-flex flex-row row-mb align-items-center" *ngIf="teacher" style="margin-bottom: 3rem;">
+                      <label class="search-title" class="wt9"></label>
+                          <table style="border: 1px solid; width: 400px;"> <!-- -->
+                              <tr style="border-bottom:1px solid;" >
+                                  <td colspan="2"><span style="font-size:1.7em;">&nbsp;&nbsp;교사 등록</span>
+                                      <span style="float: right; font-size: 2rem;" (click)="teacherclose()">×</span>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td colspan="2" style="height: 30px;"></td>
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center;">교사 성명</td>
+                                  <td><input type="text" style="width: 190px;" [(ngModel)]="staff_search_list.staff_user_nm" readonly></td> 
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center;">교사 휴대번호</td>
+                                  <td><input type="text" style="width: 190px;" [(ngModel)]="staff_search_list.staff_cp_no" readonly ></td> 
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center;">교사 아이디</td>
+                                  <td><input type="text" style="width: 190px;" [(ngModel)]="staff_search_list.staff_login_accnt" readonly> 
+                                      <input type="hidden" [(ngModel)]="staff_search_list.staff_user_no">
+                                  <button style="margin-left: 1rem;" (click)="staff_search(staff_searchModal)">검색</button></td> 
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center;">담당반</td>
+                                  <td>
+                                      <select class="form-control wt8" [(ngModel)]="class_cls_no" > 
+                                          <option value='' selected> 선택 </option>
+                                          <option *ngFor="let class of cls_list;" [value]="class.cls_no">{{class.cls_nm}}</option>
+                                      </select>
+                                  </td> 
+                              </tr>
+                              <tr>
+                                  <td colspan="2">
+                                  <button type="button" class="btn btn-info" style="float: right; margin-left: 0.5rem;" (click)="staffpost()">저장</button>
+                                  </td>
+                              </tr>
+                          </table>
+                  </div>  
+                  <div class="d-flex flex-row row-mb align-items-center" style="margin-top: 3rem;">
+                      <label class="search-title" class="wt9">NFC카드등록</label>
+                          <div> 
+                              <div class="table-responsive list-table" style="height:7rem;">
+                                  <table style="text-align: center; ">
+                                  <!-- <input #inputFile style="display: none;" (change)="checkFileType($event)" type="file"> -->
+                                  <thead>
+                                      <tr>
+                                          <th style="width: 250px">태그ID</th>
+                                          <th style="width: 50px">삭제</th>
+                                      </tr>
+                                  </thead>
+                              <tbody>
+                                      <tr *ngFor="let nfc of rfid_list;let i = index;">
+                                      <td >{{nfc.rfid}}</td>  <!-- {{file.add_name}} -->
+                                      <td>
+                                          <a *ngIf="rfid_list" (click)="nfcdelete(nfc);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                      </td>
+                                      </tr>
+                              </tbody>
+                              </table>
+                          </div>               
+                      </div>
+                      <button class="btn btn-dark" style="float: right; margin-left:1rem; margin-top: -2rem" (click)="nfcopen()">카드등록</button> <!-- (click)="fileupload()" -->
+                  </div>
+                  
+                  <div class="d-flex flex-row row-mb align-items-center" *ngIf="nfc" style="margin-top: 3rem;">
+                      <label class="search-title" class="wt9"></label>
+                      <table style="border: 1px solid; width: 400px;"> <!-- -->
+                          <tr style="border-bottom:1px solid;" >
+                              <td colspan="2"><span style="font-size:1.7em;">&nbsp;&nbsp;NFC카드 등록</span>
+                                  <span style="float: right; font-size: 2rem;" (click)="nfcclose()">×</span>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td colspan="2" style="height: 30px;"></td>
+                          </tr>
+                          <tr>
+                              <td style="text-align: center;">태그 ID</td>
+                              <td><input type="text" style="width: 190px;" [(ngModel)]="rfid"></td> 
+                          <tr>
+                              <td colspan="2">
+                              <button type="button" class="btn btn-info" style="float: right; margin-left: 0.5rem;" (click)="rfidpost()">저장</button>
+                              </td>
+                          </tr>
+                      </table>
+                  </div>        
+              </div>        
+          </div>
+      </div>
+      
+      <!-- 어린이 관련 HTML -------------------------------------------------------------->
+        <div class="card" style="margin-top: 50px;" *ngIf="childhome.oper_state == 1"> <!-- response_daycare_no || no.daycare_no-->
+            <div class="form-group">      
+              <label class="search-title" class="wt4" style="margin-left: 1rem;"> 반 선택</label>
+              <select class="form-control wt8" [(ngModel)]="class_cls_no" > 
+                      <option value='' selected> 전체 </option>
+                      <option *ngFor="let class of cls_list;" [value]="class.cls_no">{{class.cls_nm}}</option>
+              </select>
+              <label class="search-title" class="wt6" style="margin-left: 1rem;" >어린이 성명</label>
+              <input name="faq_question" class="form-control" style="width:15em;" [(ngModel)]="child_nm" (keyup.enter)="filter()">
+      
+              <button type="button" class="btn btn-info" style="margin-left: 1rem; margin-right: 53rem;" (click)="filter()">검색</button>
+      
+              <button type="button" class="btn btn-dark" (click)="childopen()">어린이등록</button>
+            </div>
+      
+            <!-- 테이블 -->
+            <div id="table">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive list-table"> 
+                            <table class="table">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="7.5%">
+                                    <col width="10%">
+                                    <col width="12.5%">
+                                    <col width="17.5%">
+                                    <col width="7.5%">
+                                    <col width="12.5%">
+                                    <col width="15%">
+                                    <col width="7.5%">
+                                </colgroup>
+                                <thead>
+                                    <tr style="text-align: center">
+                                        <th>No</th>
+                                        <th>어린이 성명</th>
+                                        <th>생년월일</th>
+                                        <th>반이름</th>
+                                        <th>태그 ID</th>
+                                        <th>보호자 성명</th>
+                                        <th>보호자휴대전화</th>
+                                        <th>등록일시</th>
+                                        <th>재원여부</th>
+                                        <th>삭제</th>
+                                    </tr>   
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight" style="text-align: center" *ngFor="let child of childdata; let i = index;" (click)="child_parent_detail(child); childopen()">
+                                        <td>{{total - ((this.page-1) * this.pageSize + i)}}</td>
+                                        <td>{{child.child_nm}}</td>
+                                        <td>{{child.birth}}</td>
+                                        <td>{{child.cls_nm}}</td>
+                                        <td>{{child.rfid}}</td>
+                                        <td>{{child.parent_nm}}</td>
+                                        <td>{{child.parent_cp_no}}</td>
+                                        <td>{{child.reg_dttm}}</td>
+                                        <td>{{child.use_yn == '1' ? '재원' : '퇴원'}}</td>
+                                        <td>
+                                            <a *ngIf="child" (click)="childdelete(child);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="list-pagination">
+                                <div class="total-page" style="text-align: right">
+                                    총 {{total}} 건, {{totalPage}} 페이지 
+                                    <ngb-pagination class="d-flex justify-content-center"  (pageChange)="paging($event)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                                    [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      
+            <!-- 어린이 등록-->
+            <div class="form-group" *ngIf="child">
+                <table style="margin-left:auto; margin-right: auto; border: 1px solid; width: 700px;"> <!-- -->
+                    <tr style="border-bottom:1px solid;" >
+                        <td colspan="2"><span style="font-size:1.7em;">&nbsp;&nbsp;어린이 등록</span>
+                          <span style="float: right; font-size: 2rem;" (click)="childclose()">×</span>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom:1px solid;">
+                        <td colspan="2" style="height: 30px;">&nbsp;&nbsp; ◇어린이정보
+                        <input type="hidden" [(ngModel)]="child_parent_data.child_no">                    <!-- 보호자 고유번호(DB용)-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 20px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">성명</td>
+                        <td><input type="text" class="form-control" style="width: 190px;" [(ngModel)]="child_parent_data.child_nm"></td> 
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">생년월일</td>
+                        <td>
+                          <input type="text" class="form-control" style="width:27%" ngbDatepicker #d1="ngbDatepicker" 
+                          (dateSelect)="onDateSelectionFrom($event)" [(ngModel)]="child_parent_data.birthDate" /> 
+                                                                  <!-- birthdata는 날짜를 피커타입으로 보여주기위함 / string타입(DB데이터)은 ts에서 처리-->
+                          <button class="btn btn-outline-secondary" (click)="d1.close();d1.toggle()" type="button">
+                          <i class="fa fa-calendar"></i>
+                          </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">반</td>
+                        <td>
+                          <select class="form-control wt8" [(ngModel)]="child_parent_data.cls_no"> 
+                                  <option value='' selected> 선택 </option>
+                                  <option *ngFor="let class of cls_list;" [value]="class.cls_no">{{class.cls_nm}}</option>
+                          </select>
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">태그ID</td>
+                        <td>
+                          <input type="text" class="form-control" style="width: 190px;" [(ngModel)]="child_parent_data.rfid" readonly>
+                          <input type="hidden" [(ngModel)]="child_parent_data.rfid_no">                         <!-- 태그ID 고유번호(DB용)-->
+                          <button class="rfidsearch" (click)="rfid_search(rfidsearch)">검색</button>
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 30px;"></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid; border-top: 1px solid;">
+                        <td colspan="2" style="height: 30px;">&nbsp;&nbsp; ◇보호자정보</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 20px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">성명</td>
+                        <td><input type="text" class="form-control" style="width: 190px;" [(ngModel)]="child_parent_data.parent_nm" readonly>
+                            <button class="parentsearch" (click)="parent_search(parent_searchModal)">검색</button>
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">휴대번호</td>
+                        <td><input type="text" class="form-control" style="width: 190px;" [(ngModel)]="child_parent_data.parent_cp_no"></td> 
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">아이디</td>
+                        <td><input type="text" class="form-control" style="width: 190px;" [(ngModel)]="child_parent_data.parent_login_accnt" readonly>
+                            <input type="hidden" [(ngModel)]="child_parent_data.parent_user_no">                    <!-- 보호자 고유번호(DB용)-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">재원여부</td>
+                        <td>
+                           <input type="radio" name="hospital" value="1" [(ngModel)]="child_parent_data.use_yn">재원
+                           <input type="radio" name="hospital" value="0" [(ngModel)]="child_parent_data.use_yn">퇴원
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                        <button type="button" class="btn btn-success" style="float: right; margin-left: 0.5rem;" (click)="childpost()">저장</button>
+                        <button type="button" class="btn btn-warning" style="float: right; margin-left: 0.5rem;" (click)="childreset()">초기화</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+      </div>
+      
+      <!-- 지도 모달 -->
+      <ng-template #mapModal let-c="close" let-d="dismiss" style="width: 100%; height: 100%; display: table;">
+        <div class="modal-header align-items-center" >
+            <h4 class="modal-title" id="modal-basic-title">지도에서 찾기</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">
+                    <div id="map" style="width:100%; height:400px;"></div>
+                    <div class="d-flex flex-row" style="margin-top:1rem">
+                        <div class="form-group d-flex flex-row" style="margin:0">
+                            <input class="form-control wt20" type="text" [(ngModel)]="search_map" (keyup.enter)="searchAddressToCoordinateInput()">
+                            <button class="btn btn-info" style="margin-left:0.5rem" (click)="searchAddressToCoordinateInput()">검색</button>
+                        </div>
+                        <div class="form-group d-flex flex-row ml-auto" style="margin:0">
+                            <button class="btn btn-info" (click)="d('select clicked')">선택</button>
+                            <button class="btn brn-secondary" style="margin-left:0.5rem" (click)="d('reset clicked'); locationSelectItem = {name: '', position: {}};">초기화</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </ng-template>
+    
+      
+      <!-- 운영자(원장) 검색 모달 -->
+      <ng-template #ceo_searchModal let-c="close" let-d="dismiss">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">운영자(원장) 검색</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="min-height:20rem; max-height:30rem; overflow:scroll">
+                <div class="form-group form-modal">
+                  <div class="label-modal">정보 검색</div>
+                  <div class="input-group input-modal">
+                      <input type="text" class="form-control long" placeholder="회원명, 전화번호" aria-label="Username" [(ngModel)]="search" (keyup.enter)="findUser()" >
+                      <div class="input-group-append"(click)="findUser()">
+                          <span class="input-group-text"><i class="mdi mdi-account-search" style="width:1rem"></i></span>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body" style="padding:0;">
+                            <div class="table-responsive list-table">
+                                <table class="table">
+                                    <colgroup>
+                                      <col width="10%">
+                                      <col width="25%">
+                                      <col width="40%">
+                                      <col width="35%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>이름</th>
+                                            <th>전화번호</th>
+                                            <th>계정</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlight" *ngFor="let item of search_List; let idx = index" (click)="ceo_search_data(item); c('Save click')">
+                                          <td>{{idx+1}}</td>
+                                          <td>{{item.user_nm}}</td>
+                                          <td>{{item.cp_no?item.cp_no:item.tel_no?item.tel_no:''}}</td>
+                                          <td>{{item.login_accnt}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+      </ng-template>
+      
+      <!-- 교사 검색 모달 -->
+      <ng-template #staff_searchModal let-c="close" let-d="dismiss">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">교사 검색</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="min-height:20rem; max-height:30rem; overflow:scroll">
+                <div class="form-group form-modal">
+                  <div class="label-modal">정보 검색</div>
+                  <div class="input-group input-modal">
+                      <input type="text" class="form-control long" placeholder="회원명, 전화번호" aria-label="Username" [(ngModel)]="search" (keyup.enter)="findUser()" >
+                      <div class="input-group-append"(click)="findUser()">
+                          <span class="input-group-text"><i class="mdi mdi-account-search" style="width:1rem"></i></span>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body" style="padding:0;">
+                            <div class="table-responsive list-table">
+                                <table class="table">
+                                    <colgroup>
+                                      <col width="10%">
+                                      <col width="25%">
+                                      <col width="40%">
+                                      <col width="35%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>이름</th>
+                                            <th>전화번호</th>
+                                            <th>계정</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlight" *ngFor="let item of search_List; let idx = index" (click)="staff_search_data(item); c('Save click')">
+                                          <td>{{idx+1}}</td>
+                                          <td>{{item.user_nm}}</td>
+                                          <td>{{item.cp_no?item.cp_no:item.tel_no?item.tel_no:''}}</td>
+                                          <td>{{item.login_accnt}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+      </ng-template>
+      
+      <!-- RFID 검색 모달 -->
+      <ng-template #rfidsearch let-c="close" let-d="dismiss">
+          <div class="modal-header">
+              <h4 class="modal-title" id="modal-basic-title"> RFID 검색</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body" style="min-height:20rem; max-height:30rem; overflow:scroll">
+              <div class="col-lg-12">
+                  <div class="card">
+                      <div class="card-body" style="padding:0;">
+                          <div class="table-responsive list-table">
+                              <table class="table">
+                                  <colgroup>
+                                  <col width="20%">
+                                  <col width="80%">
+                                  </colgroup>
+                                  <thead>
+                                      <tr>
+                                          <th>No.</th>
+                                          <th>태그ID</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr class="highlight" *ngFor="let nfc of rfid_list; let idx = index" (click)="rfid_search_data(nfc); c('Save click')">
+                                      <td>{{idx+1}}</td>
+                                      <td>{{nfc.rfid}}</td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </ng-template>
+      
+      <!-- 보호자 검색 모달 -->
+      <ng-template #parent_searchModal let-c="close" let-d="dismiss">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">보호자 검색</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="min-height:20rem; max-height:30rem; overflow:scroll">
+                <div class="form-group form-modal">
+                  <div class="label-modal">정보 검색</div>
+                  <div class="input-group input-modal">
+                      <input type="text" class="form-control long" placeholder="회원명, 전화번호" aria-label="Username" [(ngModel)]="search" (keyup.enter)="findUser()" >
+                      <div class="input-group-append"(click)="findUser()">
+                          <span class="input-group-text"><i class="mdi mdi-account-search" style="width:1rem"></i></span>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body" style="padding:0;">
+                            <div class="table-responsive list-table">
+                                <table class="table">
+                                    <colgroup>
+                                      <col width="10%">
+                                      <col width="25%">
+                                      <col width="40%">
+                                      <col width="35%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>이름</th>
+                                            <th>전화번호</th>
+                                            <th>계정</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlight" *ngFor="let item of search_List; let idx = index" (click)="parent_search_data(item); c('Save click')">
+                                          <td>{{idx+1}}</td>
+                                          <td>{{item.user_nm}}</td>
+                                          <td>{{item.cp_no?item.cp_no:item.tel_no?item.tel_no:''}}</td>
+                                          <td>{{item.login_accnt}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+      </ng-template>

@@ -1,0 +1,73 @@
+<div class="card">
+    <div class="card-body">
+        <div class="search-container">
+            <div class="form-group">
+                <!-- 관리자(전체 어린이집 리스트)-->
+                <select *ngIf="this.info.user_no == 1" class="form-control" style="width: 250px;" [(ngModel)]="daycare_no" (change)=getOrg(daycare_no);>
+                    <option value=''>어린이집 선택</option>
+                    <option *ngFor="let childhome of eventorg_list" [value]="childhome.daycare_no"> {{childhome.daycare_nm}} </option>
+                </select>
+                <!-- 로그인한 사람에 대한 어린이집 리스트-->
+                <select *ngIf="this.info.user_no != 1" class="form-control" style="width: 250px;" [(ngModel)]="daycare_no" (change)=getOrg(daycare_no);>
+                    <option *ngFor="let childhome of ceo_childhome_list" [value]="childhome.daycare_no"> {{childhome.daycare_nm}} </option>
+                </select>
+
+                <label class="search-title" style="width: 50px;">반</label>
+                <select class="form-control wt8"  [(ngModel)]="class_cls_no" (change)="filter(daycare_no)"> <!-- -->
+                        <option value='' selected> 전체 </option>
+                        <option *ngFor="let class of cls_list;" [value]="class.cls_no">{{class.cls_nm}}</option>
+                </select>
+                <label class="search-title">출결일자</label>
+                <itsm-calendar-split [(fromDt)]="fdate" [(toDt)]="tdate" title="등록일자"></itsm-calendar-split>
+                
+                <label class="search-title" style="width: 50px;">성명</label>
+                <input name="evenorg_" class="form-control" style="width:100px; margin-right: 1rem;" [(ngModel)]="child_nm" (keyup.enter)="filter(daycare_no)"> <!--  -->
+
+                <button type="button" class="btn btn-info" style="margin-right: 1rem;" (click)="filter(daycare_no)">조회</button>
+                <button type="button" class="btn btn-primary" (click)="excel()" >엑셀저장</button>
+            </div>
+        </div>
+  <div id="table">
+            <div class="table-responsive list-table"> 
+                <table class="table">
+                    <colgroup>
+                        <col width="15%">
+                        <col width="10%">
+                        <col width="15%">
+                        <col width="16%">
+                        <col width="22%">
+                        <col width="22%">
+                    </colgroup>
+                    <thead>
+                        <tr style="text-align: center">
+                            <th>출결일자</th>
+                            <th>어린이 성명</th>
+                            <th>생년월일</th>
+                            <th>반이름</th>
+                            <th>등원시간</th>
+                            <th>하원시간</th>
+                        </tr>   
+                    </thead>
+                    <tbody>
+                        <tr class="highlight" style="text-align: center" *ngFor="let child of child_date; " > <!--  let i = index / (click)="openDetail(eventrog.course_no)" -->
+                            <td>{{child.rfid_dttm}}</td> <!-- {{total - ((this.page-1) * this.pageSize + i)}} -->
+                            <td>{{child.child_nm}}</td> <!-- {{suggest.subj}}-->
+                            <td>{{child.birth}}</td> <!--  -->
+                            <td>{{child.cls_nm}}</td> <!--  -->
+                            <td>{{child.in_time}}</td>
+                            <td>{{child.out_time}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="list-pagination">
+                    <div class="total-page" style="text-align: right">
+                        총 {{total}} 건, {{totalPage}} 페이지 
+                        <ngb-pagination class="d-flex justify-content-center"  (pageChange)="paging($event,daycare_no)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                        [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+                    </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  

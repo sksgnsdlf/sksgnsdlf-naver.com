@@ -1,0 +1,208 @@
+<!-- 1차분류 -->
+<div class="row">
+        <div class="col-3"> 
+            <itsm-tree-view [height]="171.5" [data]="data" [searchShow]="false" (OnClick)="select(1,$event)"></itsm-tree-view>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                <form #clsForm1="ngForm" (ngSubmit)="save1()">
+
+                    <div class="form-group">
+                    <label class="wt4" for="cls_nm" style="margin-right: 1rem;">분류명</label>  
+                    <input id="cls_nm" name="cls_nm" class="form-control" style="width: 20%; margin-right: 1rem;" [(ngModel)]="cls1.cls_nm" #cd="ngModel"> 
+
+                    <label class="wt2" for="etc" style="margin-right: 1rem;">설명</label>
+                    <input id="etc" name="etc" class="form-control" style="width: 45%;"  required [(ngModel)]="cls1.etc" #cd="ngModel">
+                    </div>
+
+                    <div class="form-group">
+                    <label class="wt4" for="use_yn" style="margin-right:1rem;">사용여부</label>
+                        <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="cls1.use_yn" value="1" [(ngModel)]="cls1.use_yn">
+                        <label class="form-check-label" for="imgOpenY">사용</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="cls1.use_yn" value="0" [(ngModel)]="cls1.use_yn">
+                        <label class="form-check-label" for="imgOpenN">미사용</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="wt4" for="order" style="width: 100px; margin-right: 1rem;">표시순서</label>
+                        <input id="order" name="order" class="form-control" style="width: 100px;"  required [(ngModel)]="cls1.disp_ord" #cd="ngModel">
+
+                    <!-- 버튼 -->  
+                    <button type="submit" style="margin-right: 5px;" class="btn btn-info float-right" >{{edit1 ? "저장": "분류추가"}}</button>
+                    <button *ngIf="edit1" type="button" style="margin-right: 5px;" class="btn btn-danger float-right" (click)="delete1()">삭제</button>
+                    <button *ngIf="edit1" type="button" style="margin-right: 5px;" class="btn btn-inverse float-right" (click)="newCategory(1);">새분류추가</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 2차분류 --------------------------------------------------------------------------->
+    <div class="row" [ngStyle]="{'display': edit1 != true ? 'none' : ''}"> <!-- 1차분류추가 누를시 2차분류자체를 숨긴다.-->
+        <div class="col-3">
+          <itsm-tree-view [data]="data2" [searchShow]="false" (OnClick)="select(2,$event)"></itsm-tree-view>
+        </div>
+          <div class="col-6">
+              <div class="card">
+              <div class="card-body">
+                <form #clsForm2="ngForm" (ngSubmit)="save2()">
+                  <div class="form-group">
+                    <label class="wt4" for="cls_nm" style="margin-right: 1rem;">분류명</label>   <!-- name과 ngModel이 관련잇어보임 -->
+                    <input id="cls_nm" name="cls_nm" class="form-control" style="width: 20%; margin-right: 1rem;" [(ngModel)]="cls2.cls_nm" >   <!-- #cls="ngModel" -->
+
+                    <label for="etc" style="margin-right: 1rem;">설명</label>
+                    <input id="etc" name="etc" class="form-control" style="width: 45%;" required [(ngModel)]="cls2.etc" #cd="ngModel">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="wt4" for="use_yn" style="margin-right:1rem;">사용여부</label>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="cls2.use_yn" value="1" [(ngModel)]="cls2.use_yn" #imgOpenYN="ngModel">
+                        <label class="form-check-label" for="imgOpenY">사용</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="cls2.use_yn" value="0" [(ngModel)]="cls2.use_yn">
+                        <label class="form-check-label" for="imgOpenN">미사용</label>
+                      </div>
+                  </div>
+                  <div class="d-flex">
+                      <label for="image">마커이미지
+                        <a (click)="openFile1()" class="ml-2">
+                          <img src="assets/images/add_person_ico.gif" alt="">
+                        </a>
+                      </label>
+                      <div class="flex-grow-1 text-center">
+                        <div (click)="openFile1()" class="d-inline-block border" style="width: 77px; height: 77px;">
+                          <img *ngIf="cls2.marker_img1||image1" style="width: 100%; height: 100%;" [src]="cls2.marker_img1?cls2.marker_img1:image1" >
+                        </div>
+                        <input #inputFile1 style="display: none;" (change)="checkFileType1($event)" type="file" name="image1">
+                        <img class="float-right" (click)="clearimg()" src="assets/images/delete_ico.png" alt="">
+                      </div>
+                  </div>
+                  <div class="d-flex">
+                    <label for="image">마커이미지
+                      <a (click)="openFile2()" class="ml-2">
+                        <img src="assets/images/add_person_ico.gif" alt="">
+                      </a>
+                    </label>
+                    <div class="flex-grow-1 text-center">
+                      <div (click)="openFile2()" class="d-inline-block border" style="width: 77px; height: 77px;">
+                        <img *ngIf="cls2.marker_img2||image2" style="width: 100%; height: 100%;" [src]="cls2.marker_img2?cls2.marker_img2:image2" >
+                      </div>
+                      <input #inputFile2 style="display: none;" (change)="checkFileType2($event)" type="file" name="image2">
+                      <img class="float-right" (click)="clearimg2()" src="assets/images/delete_ico.png" alt="">
+                    </div>
+                  </div>
+                <div class="d-flex">
+                    <label for="image">마커이미지
+                      <a (click)="openFile3()" class="ml-2">
+                        <img src="assets/images/add_person_ico.gif" alt="">
+                      </a>
+                    </label>
+                    <div class="flex-grow-1 text-center">
+                      <div (click)="openFile3()" class="d-inline-block border" style="width: 77px; height: 77px;">
+                        <img *ngIf="cls2.marker_img3||image3" style="width: 100%; height: 100%;" [src]="cls2.marker_img3?cls2.marker_img3:image3" >
+                      </div>
+                      <input #inputFile3 style="display: none;" (change)="checkFileType3($event)" type="file" name="image3">
+                      <img class="float-right" (click)="clearimg3()" src="assets/images/delete_ico.png" alt="">
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <label for="image">마커이미지
+                      <a (click)="openFile4()" class="ml-2">
+                        <img src="assets/images/add_person_ico.gif" alt="">
+                      </a>
+                    </label>
+                    <div class="flex-grow-1 text-center">
+                      <div (click)="openFile4()" class="d-inline-block border" style="width: 77px; height: 77px;">
+                        <img *ngIf="cls2.marker_img4||image4" style="width: 100%; height: 100%;" [src]="cls2.marker_img4?cls2.marker_img4:image4" >
+                      </div>
+                      <input #inputFile4 style="display: none;" (change)="checkFileType4($event)" type="file" name="image4">
+                      <img class="float-right" (click)="clearimg4()" src="assets/images/delete_ico.png" alt="">
+                    </div>
+                </div><br><br>
+                <div class="form-group">
+                  <label class="wt4" for="order" style="width: 100px; margin-right: 1rem;">표시순서</label>
+                  <input id="order" name="order" class="form-control" style="width: 100px;"  required [(ngModel)]="cls2.disp_ord" #cd="ngModel">
+                </div>
+                <div class="form-group">
+                  <label class="wt4" for="all_use" style="width: 100px; margin-right: 1rem;">전체표시</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="cls2.listall_yn" value="1" [(ngModel)]="cls2.listall_yn">
+                    <label class="form-check-label" for="imgOpenY">사용</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="cls2.listall_yn" value="0" [(ngModel)]="cls2.listall_yn">
+                    <label class="form-check-label" for="imgOpenN">미사용</label>
+                    </div>
+                </div>
+                 <!-- 담당부서-->
+                 <div>
+                    <label style="margin-right: 5px;">담당부서</label> 
+                    <button type="button" (click)="openAsgnPopup2(showAssignModal3, 0, 0, q)" ><i class="fa fa-search"></i></button><br><br>
+                    <div class="table-responsive list-table" style="overflow:unset">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 90%;">담당부서</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let item2 of selectedLinkList; let i = index">
+                                    <tr *ngIf="item2.link_cls == 2">
+                                        <td>{{item2.link_ref_nm}}</td>
+                                        <td>
+                                            <a (click)="deleteRow(i);"><img src="assets/images/sub/delete_ico.png"
+                                                    alt="휴지통"></a>
+                                        </td>
+                                    </tr>
+                                </ng-container> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+                <!-- 버튼 -->
+                <button type="submit" style="margin-right: 5px;" class="btn btn-info float-right" >{{edit2 ? "분류저장": "분류추가"}}</button> <!-- [disabled]="!clsForm2.valid" -->
+                <button *ngIf="edit2" type="button" style="margin-right: 5px;" class="btn btn-danger  float-right" (click)="delete2()">분류삭제</button>
+                <button *ngIf="edit2" type="button" style="margin-right: 5px;" class="btn btn-inverse float-right" (click)="clsForm2.resetForm({});newCategory(2);">새분류추가</button>
+                <br><br><br>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+    <!-- 담당부서  ------------------------------------------------------------------>
+    <ng-template #showAssignModal3 let-c="close" let-d="dismiss">
+            <div class="modal-header align-items-center">
+                <h4 class="modal-title" id="modal-basic-title">담당부서</h4>
+                <div class="form-group" style="margin:0">
+                    <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="margin:0">
+                    <div class="card-body" style="width: 540px;">
+                        <div class="form-group d-flex">
+                            <div class="btn radio-btn" [ngClass]="{'on': selectedPopupTab == 4}" (click)="changePopupTab(4)">
+                                담당부서
+                            </div>                  
+                        <button class="btn btn-info ml-auto" (click)="selectTempUsers2()" *ngIf="assign_popup_type == 0">선택</button>
+                        </div>
+                        <div class="d-flex">
+                            <div style="width:100%">
+                                <div class="inner pad15">
+                                    <itsm-tree-view [height]="480" [checkbox]="true" [data]="depts" (OnClick)="userSelectChanged2($event)"></itsm-tree-view> 
+                                </div>
+                            </div>
+                          </div>
+                  </div>
+              </div>
+          </div>
+        </ng-template>

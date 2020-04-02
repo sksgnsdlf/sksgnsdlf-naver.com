@@ -1,0 +1,58 @@
+<div class="card">
+    <div class="card-body">   
+      <div style="float: right">
+          <button class="btn btn-info" style="margin-right:1rem;" (click)="noticeback()"> 돌아가기</button>
+          <button class="btn btn-info" style="margin-right:1rem;" (click)="save()" > 저장</button>
+      </div>
+      
+      <div class="form-group">
+          <label class="search-title" class="wt8 title" style="color: red">제목(필수)</label>
+          <input name="notice_subj" class="form-control" style="width:40em;"  [(ngModel)]="notice.subj" >
+      </div>
+  
+      <div class="form-group">
+        <label class="search-title" class="wt8 title" style="color: red">내용(필수)</label>
+        <itsm-ckeditor name="notice_txt" [ngStyle]="{'display': 'block'}" [(ngModel)]="notice.txt" ></itsm-ckeditor>  
+      </div>
+      <div class="form-group">
+        <label class="search-title" class="wt8 title">게시상태</label>
+        <select class="form-control wt8" [(ngModel)]="notice.state">
+            <option value="1">사용</option>
+            <option value="2">미사용</option>
+        </select>
+      </div>
+  
+      <div class="d-flex flex-row row-mb align-items-center" *ngIf="!no.notice_no">
+        <label class="search-title" class="wt8 title">첨부파일</label>
+        <label class="search-title">공지사항 등록후 첨부파일을 올릴 수 있습니다.</label>   
+      </div>
+
+      <div class="d-flex flex-row row-mb align-items-center" *ngIf="no.notice_no || response_notice_no">
+        <label class="search-title" class="wt8 title">첨부파일</label>
+            <div> 
+                <div class="table-responsive list-table" style="height:5.1rem;">
+                    <table style="text-align: center; ">
+                    <input #inputFile style="display: none;" (change)="checkFileType($event)" type="file">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px">파일명</th>
+                            <th style="width: 50px">삭제</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr *ngFor="let file of notice.files; let i = index;">
+                                <td >{{file.add_name}}</td>  <!-- {{item.cls_nm}} -->
+                                <td>
+                                    <a *ngIf="file.add_name" (click)="deleteRow(i,file);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                </td>
+                            </tr>
+                    </tbody>
+                    </table>
+                </div>               
+            </div>
+            <button class="btn btn-info" style="float: right; margin-left:1rem; margin-top: -2rem" (click)="fileupload()">추가</button> 
+            <div>
+            </div>        
+        </div>
+    </div>
+</div>

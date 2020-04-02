@@ -1,0 +1,116 @@
+<input type="radio" name="check" value="1" [(ngModel)]="checktyp" >&nbsp; 비콘 &nbsp;&nbsp;&nbsp;
+<input type="radio" name="check" value="2" [(ngModel)]="checktyp" >&nbsp; RFID &nbsp;&nbsp;&nbsp; 
+<div class="row" *ngIf="checktyp =='1'"> 
+<div class="col-3">
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group" >
+                <div class="option-container">
+                    <button type="button" class="btn btn-info" style="float: right; margin-right: 1rem; margin-left: 1rem;" (click)="beaconadd()"> 신규 </button>
+                </div>
+            </div>
+        <table class="table">
+            <thead>
+            <th >단말번호</th>
+            <th >MAC</th>
+            <th >삭제</th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of beacons; let i = index; " style="cursor: pointer;" (click)="beaconselect(item)">
+                <td>{{item.beacon_no}}</td>
+                <td>{{item.mac_addr}}</td>
+                <td><a *ngIf="beacon" (click)="beacondelete(item);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<div class="col-6">
+        <div class="card">
+            <div class="card-body">
+            <table class="table">
+                <thead>
+                <th colspan="6" >비콘 정보관리</th>
+                </thead>
+                <tbody>
+                <tr > <!--  style="cursor: pointer;" (click)="select(item)" -->
+                    <td >단말번호</td>
+                    <td><input class="form-control" type="text" style="width:10em;" [(ngModel)]="beacondata.beacon_no" readonly></td>
+                    <td>등록회원</td>
+                    <td><input class="form-control" type="text" style="width:10em;" [(ngModel)]="beacondata.reg_user_nm" readonly></td>
+                </tr>
+                <tr > 
+                    <td>UUID</td>
+                    <td colspan="2" ><input class="form-control" type="text" style="width:20em;" [(ngModel)]="beacondata.uuid"></td> 
+                </tr>
+                <tr > 
+                    <td >MAC addr</td>
+                    <td colspan="2" ><input class="form-control" type="text" style="width:15em;" [(ngModel)]="beacondata.mac_addr"></td> 
+                </tr>
+                <tr> 
+                    <td>major</td>
+                    <td colspan="2" ><input class="form-control" type="text" style="width:15em;" [(ngModel)]="beacondata.major"></td> 
+                </tr>
+                <tr> 
+                    <td>minor</td>
+                    <td colspan="2" ><input class="form-control" type="text" style="width:15em;" [(ngModel)]="beacondata.minor"></td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-info" style="float: right; margin-right: 1rem; margin-left: 1rem;" (click)="beaconsave()"> 저장 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" *ngIf="checktyp =='2'" > 
+    <div class="col-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group" >
+                    <div class="option-container">
+                        <button type="button" class="btn btn-info" style="float: right; margin-right: 1rem; margin-left: 1rem;" (click)="rfidadd()"> 신규 </button>
+                    </div>
+                </div>
+            <table class="table">
+                <thead>
+                <th>단말번호</th>
+                <th>태그번호</th>
+                <th>삭제</th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of rfid" style="cursor: pointer;" (click)="rfidselect(item)">
+                    <td>{{item.rfid_no}}</td>
+                    <td>{{item.rfid}}</td>
+                    <td><a *ngIf="beacon" (click)="rfiddelete(item);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a></td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th colspan="6" >비콘 정보관리</th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>번호</td>
+                        <td colspan="2" ><input class="form-control" type="text" style="width:20em;" [(ngModel)]="rfiddata.rfid_no" readonly></td>
+                    </tr>
+                    <tr> 
+                        <td>RFID</td>
+                        <td colspan="2" ><input class="form-control" type="text" style="width:20em;" [(ngModel)]="rfiddata.rfid"></td>
+                        <td><button type="button" class="btn btn-info" style="float: right; margin-right: 1rem; margin-left: 1rem;" (click)="rfidsave()"> 저장 </button></td>
+                    </tr>
+                    </tbody>
+                </table>
+                
+                </div>
+            </div>
+    </div>
+</div>

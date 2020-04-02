@@ -1,0 +1,865 @@
+<div class="card">
+    <div class="card-body">   
+        <div style="float: right">
+            <button *ngIf="no.place_no"class="btn btn-info" style="margin-right:1rem;" (click)="delete()"> 삭제</button>
+            <button class="btn btn-info" style="margin-right:1rem;" (click)="goback()"> 돌아가기</button>
+            <button class="btn btn-info" style="margin-right:1rem;" (click)="save()" > 저장</button>
+        </div>
+        <form #codeForm="ngForm">
+            <div class="d-flex flex-row row-mb align-items-center">
+                <div class="wt8 title">장소명</div>
+                <div class="form-group wt8" style="margin:0">
+                    <input id="place_nm" name="place_nm" class="form-control" style="width:40em;" [(ngModel)]="place.place_nm"> 
+                </div>
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                    <div class="wt8 title">장소표시명</div>
+                    <div class="form-group wt8" style="margin:0">
+                        <input id="place_nm" name="place_disp" class="form-control" style="width:40em;" [(ngModel)]="place.place_disp"> 
+                    </div>
+                </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                <div class="wt8 title">대분류</div>
+                <select class="form-control wt8"  name="placeBig" [(ngModel)]="place.place_cls" (ngModelChange)="bigCate()" style="margin-right:1rem;">
+                      <option *ngFor="let lv1item of bigdata" [value]="lv1item.cls_cd" >{{lv1item.cls_nm}}</option>
+                </select>
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                <div class="wt8 title" >소분류</div>
+                    <div> 
+                        <div class="table-responsive list-table" style="height:5.1rem;">
+                            <table style="text-align: center; ">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px">소분류</th>
+                                    <th style="width: 50px">삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr *ngFor="let item of place.place_cls_list; let i = index;">
+                                        <td>{{item.cls_nm}}</td> 
+                                        <td>
+                                            <a *ngIf="item.cls_nm" (click)="deleteRow(i,item);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                            </table>
+                        </div>             
+                    </div>
+                    <div>
+                    <button class="btn btn-info" style="float: right; margin-left:1rem; margin-top: -2rem"
+                    (click)="openAsgnPopup2(smallpartModal2, 0, 0)">추가</button>   
+                    </div>        
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                    <div class="wt8 title" >담당자</div>
+                        <div> 
+                            <div class="table-responsive list-table" style="height:5.1rem;">
+                                <table style="text-align: center; ">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 300px">소속/업체</th>
+                                        <th style="width: 100px">이름</th>
+                                        <th style="width: 150px">번호</th>
+                                        <th style="width: 50px">삭제</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr *ngFor="let item of place.duty_user_list; let i = index;">
+                                            <td >{{item.dept}}</td> 
+                                            <td >{{item.user_nm}}</td> 
+                                            <td >{{item.cp_no}}</td>
+                                            <td>
+                                                <a *ngIf="item.user_nm" (click)="dutydeleteRow(i,item);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                                </table>
+                            </div>             
+                        </div>
+                        <div>
+                        <button class="btn btn-info" style="float: right; margin-left:1rem; margin-top: -2rem" (click)="opendutyPopup(dutyModal, 0, 0)">추가</button>   
+                        </div>        
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                <div class="wt8 title">운영상태</div>
+                <div class="form-group wt11" style="margin:0">
+                    <input type="radio" name="place.oper_state" value="1" [(ngModel)]="place.oper_state">&nbsp; 운영중
+                    <input type="radio" name="place.oper_state" value="0" [(ngModel)]="place.oper_state" style="margin-left:1rem;">&nbsp; 미운영중
+                </div>
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                    <div class="wt8 title">사용유무</div>
+                    <div class="form-group wt11" style="margin:0">
+                        <input type="radio" name="place.use_yn" value="1" [(ngModel)]="place.use_yn">&nbsp; 사용
+                        <input type="radio" name="place.use_yn" value="0" [(ngModel)]="place.use_yn" style="margin-left:2rem;">&nbsp; 미사용
+                    </div>
+                </div>
+            <div class="d-flex flex-row row-mb">
+                <div class="wt8 title">이미지</div>
+                <div class="w445">
+                    <div class="add_img_wrap">
+                        <input #inputFile1 style="display: none;" (change)="checkFileType($event)" type="file">
+                        <a style="width: 85px; height: 85px; overflow: hidden;">
+                            <img style="width: 100%;" *ngIf="picList[0]" [src]="picList[0]" (click)="selectedImg = picList[0]">
+                        </a>
+                        <div class="input-group-append" *ngIf="picList[0] && is_editable" (click)="deleteFile(0)">
+                        <button class="btn btn-info" type="button"><i class="icon-trash"></i></button>
+                        </div>
+                        <button class="btn btn-info" style="width: 60px;" *ngIf="picList.length < 1 && is_editable" (click)="openFile()" ><i class="icon-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                <div class="wt8 title">주소/위치</div>
+                <div class="form-group wt25" style="margin:0">        
+                    <div class="form-group" style="margin:0">                                                       
+                        <input class="form-control" style="width:30rem" type="text" [disabled]="!is_editable" [(ngModel)]="place.addr1"
+                             [ngModelOptions]="{standalone: true}"> <!-- (ngModelChange)="onChange($event)" -->
+                                                                                <!-- input이 많아서 충돌나서 값이 안찍힘 / 상위(standalone)로 올리니까 지도값이 받아진다. -->
+                        <button class="btn btn-info" *ngIf="is_editable" (click)="openMap(mapModal)" style="margin-left:1rem;">지도에서 찾기</button>  
+                    </div>                                        
+                </div>
+            </div>
+            <!-- 상세 주소 -->
+            <div class="d-flex flex-row row-mb align-items-center"> 
+                <div class="wt8 title">상세주소</div>
+                <input class="form-control" name="place.addr2" style="width:30rem;" [(ngModel)]="place.addr2">
+            </div>
+
+            <!-- 위도, 경도 -->
+            <div class="d-flex flex-row row-mb align-items-center" > <!-- *ngIf="place"--> 
+                <div class="wt8 title"></div>
+                위도 : &nbsp;&nbsp; {{place.lat}} &nbsp;&nbsp;&nbsp;
+                경도 : &nbsp;&nbsp; {{place.lon}}
+           </div>
+           
+           <!-- 지역 -->
+           <div class="d-flex flex-row row-mb align-items-center "> 
+               <div class="wt8 title">지역</div>
+               <select class="form-control wt8" name="district_cd" [(ngModel)]="place.district_cd">
+                   <option  *ngFor="let dist of district_nm;" [value]="dist.district_cd">{{dist.district_nm}}</option>
+               </select>
+           </div>
+
+           <div class="d-flex flex-row row-mb align-items-center">
+               <div class="wt8 title">대표전화</div>
+               <div class="form-group wt8" style="margin:0">
+                   <input class="form-control" name="place.tel1" style="width:10em;" [(ngModel)]="place.tel1">
+               </div>
+           </div>
+           <div class="d-flex flex-row row-mb align-items-center">
+               <div class="wt8 title">연락처</div>
+               <div class="form-group wt8" style="margin:0">
+                   <input class="form-control" name="place.tel2" style="width:10em;" [(ngModel)]="place.tel2">
+               </div>
+           </div>
+           <div class="d-flex flex-row row-mb align-items-center">
+               <div class="wt8 title">링크 URL</div>
+               <div class="form-group wt15" style="margin:0">
+                   <input class="form-control" name="place.link_url" style="width:50em;" [(ngModel)]="place.link_url">
+                   </div>
+           </div>
+           <div  class="d-flex flex-row row-mb align-items-center">
+               <div class="wt8 title">시간설정</div>
+               <div class="form-group wt15" style="margin:0">                                       
+                   <input type="radio" name="time" value="0" [(ngModel)]="place.place_time" >운영시간 <!-- 해당 input의 value은 1을 ngModel에 넣어주면서 ts와 연동(ngModel=1)-->
+                   <input type="radio" name="time" value="1" [(ngModel)]="place.place_time" >요일별설정 <!-- 해당 input의 value은 2을 ngModel에 넣어주면서 ts와 연동(ngModel=2)-->
+               </div>
+           </div>
+                <!-- 운영시간 선택시 나옴 -->
+                <div *ngIf="place.place_time == '0'"  class="d-flex flex-row row-mb align-items-center" >
+                    <div class="wt8 title">운영시간</div>
+                    <div class="form-group wt15" style="margin:0">
+                        <textarea class="form-control" name="place.open_time" style="width:50em; height:10em;" [(ngModel)]="place.open_time"></textarea>
+                    </div>
+                </div>
+                <!-- 요일별설정 선택시 나옴 -->
+                <div *ngIf="place.place_time == '1'" class="d-flex flex-row row-mb align-items-center">
+                    <div class="wt8 title">요일별설정</div> 
+                <div class="category"> 
+                    <!-- 스위치 버튼-->
+                        <span style="font-weight: bold">요일별 운영시간 설정</span>
+                        <div class="item-container">
+                            <div class="anil_nepal"  > 
+                            <!-- 월 -->
+                            <div>
+                                <span *ngIf="place.place_time_list[0].day_off == '1'">
+                                월 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_0" type="text" style="width:9.3em;" 
+                                [(ngModel)]="place.place_time_list[0].open_time" readonly>
+                                - 
+                                <input class="form-control" name="close_time_0" type="text" style="width:9.3em;"
+                                [(ngModel)]="place.place_time_list[0].close_time" readonly>  
+                                </span>
+                                <span *ngIf="place.place_time_list[0].day_off == '0'" >
+                                월 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_0" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[0].open_time">
+                                - 
+                                <input class="form-control" name="close_time_0" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[0].close_time">  
+                                </span>
+                                휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one0" name="place.place_time_list[0].day_off" value="1" [(ngModel)]="place.place_time_list[0].day_off">
+                                <label for=radio-one0>On</label>
+                                <input type="radio" id="radio-two0" name="place.place_time_list[0].day_off" value="0" [(ngModel)]="place.place_time_list[0].day_off">
+                                <label for=radio-two0>Off</label>
+                                </span>
+                            </div>
+                            <!-- 화 -->
+                            <div>
+                                <span *ngIf="place.place_time_list[1].day_off == '1'">
+                                화 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_1" type="text" style="width:9.3em;" 
+                                [(ngModel)]="place.place_time_list[1].open_time" readonly>
+                                - 
+                                <input class="form-control" name="close_time_1" type="text" style="width:9.3em;"
+                                [(ngModel)]="place.place_time_list[1].close_time" readonly>  
+                                </span>
+                                <span *ngIf="place.place_time_list[1].day_off == '0'" >
+                                화 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_1" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[1].open_time">
+                                - 
+                                <input class="form-control" name="close_time_1" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[1].close_time">  
+                                </span>
+                                휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one1" name="place.place_time_list[1].day_off" value="1" [(ngModel)]="place.place_time_list[1].day_off">
+                                <label for=radio-one1>On</label>
+                                <input type="radio" id="radio-two1" name="place.place_time_list[1].day_off" value="0" [(ngModel)]="place.place_time_list[1].day_off">
+                                <label for=radio-two1>Off</label>
+                                </span>
+                            </div>
+
+                            <!-- 수 -->
+                            <div>
+                                <span *ngIf="place.place_time_list[2].day_off == '1'">
+                                수 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_2" type="text" style="width:9.3em;" 
+                                [(ngModel)]="place.place_time_list[2].open_time" readonly>
+                                - 
+                                <input class="form-control" name="close_time_2" type="text" style="width:9.3em;"
+                                [(ngModel)]="place.place_time_list[2].close_time" readonly>  
+                                </span>
+                                <span *ngIf="place.place_time_list[2].day_off == '0'" >
+                                수 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_2" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[2].open_time">
+                                - 
+                                <input class="form-control" name="close_time_2" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[2].close_time">  
+                                </span>
+                                휴무
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one2" name="place.place_time_list[2].day_off" value="1" [(ngModel)]="place.place_time_list[2].day_off">
+                                <label for=radio-one2>On</label>
+                                <input type="radio" id="radio-two2" name="place.place_time_list[2].day_off" value="0" [(ngModel)]="place.place_time_list[2].day_off">
+                                <label for=radio-two2>Off</label>
+                                </span>
+                            </div>
+
+                            <!-- 목 -->
+                            <div>
+                                <span *ngIf="place.place_time_list[3].day_off == '1'">
+                                목 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_3" type="text" style="width:9.3em;" 
+                                [(ngModel)]="place.place_time_list[3].open_time" readonly>
+                                - 
+                                <input class="form-control" name="close_time_3" type="text" style="width:9.3em;"
+                                [(ngModel)]="place.place_time_list[3].close_time" readonly>  
+                                </span>
+                                <span *ngIf="place.place_time_list[3].day_off == '0'" >
+                                토 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_3" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[3].open_time">
+                                - 
+                                <input class="form-control" name="close_time_3" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[3].close_time">  
+                                </span>
+                                휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one3" name="place.place_time_list[3].day_off" value="1" [(ngModel)]="place.place_time_list[3].day_off">
+                                <label for=radio-one3>On</label>
+                                <input type="radio" id="radio-two3" name="place.place_time_list[3].day_off" value="0" [(ngModel)]="place.place_time_list[3].day_off">
+                                <label for=radio-two3>Off</label>
+                                </span>
+                            </div>
+
+                            <!-- 금 -->
+                            <div>
+                                <span *ngIf="place.place_time_list[4].day_off == '1'">
+                                금 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_4" type="text" style="width:9.3em;" 
+                                [(ngModel)]="place.place_time_list[4].open_time" readonly>
+                                - 
+                                <input class="form-control" name="close_time_4" type="text" style="width:9.3em;"
+                                [(ngModel)]="place.place_time_list[4].close_time" readonly>  
+                                </span>
+                                <span *ngIf="place.place_time_list[4].day_off == '0'" >
+                                금 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-control" name="open_time_4" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[4].open_time">
+                                - 
+                                <input class="form-control" name="close_time_4" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[4].close_time">  
+                                </span>
+                                휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one4" name="place.place_time_list[4].day_off" value="1" [(ngModel)]="place.place_time_list[4].day_off">
+                                <label for=radio-one4>On</label>
+                                <input type="radio" id="radio-two4" name="place.place_time_list[4].day_off" value="0" [(ngModel)]="place.place_time_list[4].day_off">
+                                <label for=radio-two4>Off</label>
+                                </span>
+                            </div>
+
+                            <!-- 토 -->
+                            <div>
+                            <span *ngIf="place.place_time_list[5].day_off == '1'">
+                            토 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="form-control" name="open_time_5" type="text" style="width:9.3em;" 
+                            [(ngModel)]="place.place_time_list[5].open_time" readonly>
+                            - 
+                            <input class="form-control" name="close_time_5" type="text" style="width:9.3em;"
+                            [(ngModel)]="place.place_time_list[5].close_time" readonly>  
+                            </span>
+                            <span *ngIf="place.place_time_list[5].day_off == '0'" >
+                            토 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="form-control" name="open_time_5" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[5].open_time">
+                            - 
+                            <input class="form-control" name="close_time_5" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[5].close_time">  
+                            </span>
+                            휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one5" name="place.place_time_list[5].day_off" value="1" [(ngModel)]="place.place_time_list[5].day_off">
+                                <label for=radio-one5>On</label>
+                                <input type="radio" id="radio-two5" name="place.place_time_list[5].day_off" value="0" [(ngModel)]="place.place_time_list[5].day_off">
+                                <label for=radio-two5>Off</label>
+                                </span>
+                            </div>
+
+                            <!-- 일 -->
+                            <div>
+                            <span *ngIf="place.place_time_list[6].day_off == '1'">
+                            일 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="form-control" name="open_time_6" type="text" style="width:9.3em;" 
+                            [(ngModel)]="place.place_time_list[6].open_time" readonly>
+                            - 
+                            <input class="form-control" name="close_time_6" type="text" style="width:9.3em;"
+                            [(ngModel)]="place.place_time_list[6].close_time" readonly>  
+                            </span>
+                            <span *ngIf="place.place_time_list[6].day_off == '0'" >
+                            일 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="form-control" name="open_time_6" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[6].open_time">
+                            - 
+                            <input class="form-control" name="close_time_6" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[6].close_time">  
+                            </span>
+                            휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one6" name="place.place_time_list[6].day_off" value="1" [(ngModel)]="place.place_time_list[6].day_off">
+                                <label for=radio-one6>On</label>
+                                <input type="radio" id="radio-two6" name="place.place_time_list[6].day_off" value="0" [(ngModel)]="place.place_time_list[6].day_off">
+                                <label for=radio-two6>Off</label>
+                                </span>
+                            </div>
+
+                            <!-- 공휴 -->
+                            <div>
+                            <span *ngIf="place.place_time_list[7].day_off == '1'">
+                            공휴 &nbsp;
+                            <input class="form-control" name="place.place_time_list[7].open_time" type="text" style="width:9.3em;" 
+                            [(ngModel)]="place.place_time_list[7].open_time" readonly>
+                            - 
+                            <input class="form-control" name="place.place_time_list[7].close_time" type="text" style="width:9.3em;"
+                            [(ngModel)]="place.place_time_list[7].close_time" readonly>  
+                            </span>
+                            <span *ngIf="place.place_time_list[7].day_off == '0'" >
+                            공휴 &nbsp;
+                            <input class="form-control" name="open_time_7" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[7].open_time">
+                            - 
+                            <input class="form-control" name="close_time_7" type="text" style="width:9.3em;" [(ngModel)]="place.place_time_list[7].close_time">  
+                            </span>
+                            휴무 
+                                <span class="switch-field" style="float: right">
+                                <input type="radio" id="radio-one7" name="place.place_time_list[7].day_off" value="1" [(ngModel)]="place.place_time_list[7].day_off">
+                                <label for=radio-one7>On</label>
+                                <input type="radio" id="radio-two7" name="place.place_time_list[7].day_off" value="0" [(ngModel)]="place.place_time_list[7].day_off">
+                                <label for=radio-two7>Off</label>
+                                </span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="d-flex flex-row row-mb align-items-center">
+                <div class="wt8 title">기타</div>
+                <div class="form-group wt15" style="margin:0">
+                    <textarea class="form-control" name="place.etc" style="width:50em; height:10em;" [(ngModel)]="place.etc"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="col-lg-12" style="padding:0">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex" style="margin-bottom:1rem;">
+                        <div class="btn radio-btn" [ngClass]="{'on': receipt_typ == '0'}"><a (click)="receipt_typ = '0'; reView()">리뷰</a></div>
+                        <div class="btn radio-btn" [ngClass]="{'on': receipt_typ == '1'}"><a (click)="receipt_typ = '1'; reError()">오류신고</a></div>
+                        <!-- <div class="btn radio-btn" [ngClass]="{'on': receipt_typ == '2'}"><a (click)="receipt_typ = '2'; reIncon()">불편신고</a></div> -->
+                </div>
+                <!-- 리뷰 -->
+                <div *ngIf="receipt_typ == '0'">
+                    <div class="table-responsive list-table" > 
+                        <!-- style="table-layout:fixed" + text-overflow: ellipsis; overflow: hidden; white-space: nowrap; = 말줄임표-->
+                            <table class="table" style="table-layout:fixed"> 
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="45%">
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="20%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="noLLine">No</th>
+                                        <th>리뷰내용</th>
+                                        <th>평점</th>
+                                        <th>작성자</th>
+                                        <th>작성일시</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                    <tr class="highlight" style="text-align: center; " *ngFor="let item of reViewlist; let i = index" (click)="select(item); open(contentModal1,i); ">
+                                      <td class="noLLine">{{total - ((this.page-1) * this.pageSize + i)}}</td>
+                                        <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">{{item.txt}}</td>
+                                        <td >{{item.rate_score}}</td>
+                                        <td >{{item.user_nm}}</td>
+                                        <td >{{item.reg_dttm}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div> 
+                    <div class="list-pagination">
+                        <div class="total-page" style="text-align: right">
+                          <ngb-pagination class="d-flex justify-content-center" (pageChange)="paging($event)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                          [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+                          총 {{total}} 건, {{totalPage}} 페이지
+                       </div>
+                   </div>
+                </div>
+                <!-- 오류신고-->
+                <div *ngIf="receipt_typ == '1'">
+                        <div class="table-responsive list-table"> 
+                            <table class="table">
+                                <colgroup>
+                                    <col width="11%">
+                                    <col width="60%">
+                                    <col width="17%">
+                                    <col width="22%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="noLLine">No</th>
+                                        <th>오류신고내용</th>
+                                        <th>작성자</th>
+                                        <th>작성일시</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight" style="text-align: center"  *ngFor="let item2 of reErrorlist; let i = index" (click)="select(item2); open(contentModal2,i)">
+                                        <td class="noLLine">{{total2 - ((this.page2-1) * this.pageSize2 + i)}}</td>
+                                        <td >{{item2.txt}}</td>
+                                        <td >{{item2.user_nm}}</td>
+                                        <td >{{item2.reg_dttm}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                          </div>
+                    <div class="list-pagination">
+                            <div class="total-page" style="text-align: right">
+                            <ngb-pagination class="d-flex justify-content-center" (pageChange)="paging2($event)" [collectionSize]="collectionSize2" [maxSize]="maxPage2" 
+                            [(page)]="page2" aria-label="Default pagination"></ngb-pagination>
+                            총 {{total2}} 건, {{totalPage2}} 페이지
+                            </div>
+                    </div>
+                </div>
+                <!-- 불편신고 -->
+                <!-- <div *ngIf="receipt_typ == '2'">
+                        <div class="table-responsive list-table"> 
+                            <table class="table">
+                                <colgroup>
+                                    <col width="7%">
+                                    <col width="50%">
+                                    <col width="10%">
+                                    <col width="8%">
+                                    <col width="25%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="noLLine">No</th>
+                                        <th>불편신고내용</th>
+                                        <th>처리상태</th>
+                                        <th>작성자</th>
+                                        <th>작성일시</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight" style="text-align: center"  *ngFor="let item of reInconlist; let i = index" (click)="select(item); open(contentModal3,i)">
+                                        <td class="noLLine">{{total3 - ((this.page-1) * this.pageSize + i)}}</td>
+                                        <td >{{item.txt}}</td>
+                                        <td >{{item.proc_state_nm}}</td>
+                                        <td >{{item.user_nm}}</td>
+                                        <td >{{item.reg_dttm}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                            <div class="list-pagination">
+                                    <div class="total-page" style="text-align: right">
+                                    <ngb-pagination class="d-flex justify-content-center" (pageChange)="paging3($event)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                                    [(page)]="page3" aria-label="Default pagination"></ngb-pagination>
+                                    총 {{total3}} 건, {{totalPage3}} 페이지
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+        </div>
+
+<!-- 지도 모달 -->
+<ng-template #mapModal let-c="close" let-d="dismiss">
+    <div class="modal-header align-items-center">
+        <h4 class="modal-title" id="modal-basic-title">지도에서 찾기</h4>
+        <div class="form-group" style="margin:0">
+            <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="card" style="margin:0">
+            <div class="card-body">
+                <div id="map" style="width:100%; height:400px;"></div>
+                <!-- <div class="d-flex flex-row" style="margin-top:1rem; margin-bottom: 1rem; float: right;">
+                        <input class="form-control wt20" type="text" [(ngModel)]="place.addr1" (keyup.enter)="searchAddressToCoordinateInput()">
+                </div> -->
+                <div class="d-flex flex-row row-mb align-items-center" style="margin-top:1rem;">
+                        <div class="wt6 title">주소/위치</div>       
+                        <div class="form-group" style="width: 100%; margin:0">                                                       
+                            <input class="form-control" style="width:35rem" type="text" [disabled]="!is_editable" [(ngModel)]="modal_address" 
+                            [ngModelOptions]="{standalone: true}" (keyup.enter)="searchAddressToCoordinateInput()">
+                            <button class="btn btn-info" style="float:right; margin-left:0.5rem" (click)="searchAddressToCoordinateInput()" >검색</button>
+                        </div>
+                </div> 
+                <div class="d-flex flex-row row-mb align-items-center">
+                        <div class="wt6 title">위도</div>       
+                        <div class="form-group" style="width: 100%; margin:0;">                                                       
+                            <input class="form-control" style="width:30%" type="text" [disabled]="!is_editable" [(ngModel)]="modal_lat" (change)="lat_lon_change_map_move()">
+
+                        </div>
+                </div> 
+                <div class="d-flex flex-row row-mb align-items-center">
+                        <div class="wt6 title">경도</div>    
+                        <div class="form-group" style="width: 100%; margin:0;">                                                       
+                            <input class="form-control" style="width:30%" type="text" [disabled]="!is_editable" [(ngModel)]="modal_lon" (change)="lat_lon_change_map_move()">
+                            <button class="btn btn-info" style="float: right; margin-left: 1rem;" (click)="d('Cross click');">취소</button>
+                            <button class="btn btn-info" style="float: right;" (click)="choose(); d('Cross click');">선택</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- 소분류 추가모달-->
+<ng-template #smallpartModal2 let-c="close" let-d="dismiss" id="id">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">소분류</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">             
+                    <div class="form-group d-flex">
+                    <button class="btn btn-info ml-auto" *ngIf="assign_popup_type == 0"  (click)="selectTempUsers()">선택</button> 
+                    </div>
+                    <div class="form-group d-flex">
+                        <div class="category">
+                            <div class="item-container">
+                                <div class="item" *ngFor="let item of smallpart"> 
+                                    <input type="checkbox" (change)="userSelectChanged($event, item)"> 
+                                    <label>{{item.cls_nm}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</ng-template>
+
+  <!-- 사용자 추가모달-->
+  <ng-template #dutyModal let-c="close" let-d="dismiss" id="id">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">{{assign_popup_type == 0 ? '담당자 지정' : '직원조회'}}</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">
+                    <div class="form-group d-flex">
+                        <div class="btn radio-btn" [ngClass]="{'on': selectedPopupTab == 0}" (click)="changePopupTab(0)">
+                            인명, 업무검색
+                        </div>
+                        <div class="btn radio-btn" [ngClass]="{'on': selectedPopupTab == 1}" (click)="changePopupTab(1)">
+                            협력업체
+                        </div>
+                        <button class="btn btn-info ml-auto" (click)="selectduty()"> <!--  *ngIf="assign_popup_type == 0"-->
+                            선택
+                        </button>
+                    </div>
+                    <div class="d-flex">
+                        <ng-container *ngIf="selectedPopupTab == 0">
+                            <div class="form-group" [hidden]="!orgList || !orgList.length">
+                                <select class="form-control" name="" id="" [(ngModel)]="selectedOrgId" (change)="getOrgUser()">
+                                    <option *ngIf="loginSession.isAdmin()" value="-1">기관</option>
+                                    <option *ngFor="let item of orgList; let i = index" [value]="item.id">{{item.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-left:0.5rem; width:15rem;">
+                                <input class="form-control" type="text" placeholder="담당자 또는 업무명으로 검색" style="width:14.5rem;"
+                                    [(ngModel)]="q" (keyup.enter)="getOrgUser()">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-info" (click)="getOrgUser()">조회</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedPopupTab == 1">
+                            <div class="form-group" style="width:250px;">
+                                <input class="form-control" type="text" placeholder="업체명, 서비스, 업무" style="width:240px;"
+                                    [(ngModel)]="partner_nm" (keyup.enter)="getOrgUser()">
+                            </div>
+                            <div class="btn_wrap floatL marL10">
+                                <button class="btn btn-info" (click)="getOrgUser()">조회</button>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class="brdList_wrap marT10">
+                        <!-- 인명, 업무검색 -->
+                        <div class="table-responsive list-table" style="overflow:unset">
+                            <table class="table" [ngStyle]="{'display': selectedPopupTab != 0 ? 'none' : ''}">
+                                <colgroup>
+                                    <col width="7%" *ngIf="assign_popup_type == 0">
+                                    <col width="18%">
+                                    <col width="7%">
+                                    <col width="30%">
+                                    <col width="13%">
+                                    <col width="15%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th *ngIf="assign_popup_type == 0"></th>
+                                        <th>소속/업체</th>
+                                        <th>담당자</th>
+                                        <th>담당업무</th>
+                                        <th>직급</th>
+                                        <th>휴대전화</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of orgUserList; let i = index">
+                                        <td *ngIf="assign_popup_type == 0">
+                                            <input type="checkbox" (change)="dutySelectChanged($event, item)">
+                                        </td>
+                                        <td style="text-align: left">{{item.full_dept_nm}}</td>
+                                        <td>{{item.user_nm}}</td>
+                                        <td class="task">
+                                            {{item.task_nm | slice:0:35}}{{item.task_nm && (item.task_nm).length > 35 ?
+                                            '...': ''}}
+                                            <div class="full">
+                                                {{item.task_nm}}
+                                            </div>
+                                        </td>
+                                        <td>{{item.duty_nm}}</td>
+                                        <td>{{item.cp_no}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 협력업체 -->
+                        <div class="table-responsive list-table" style="overflow:unset">
+                            <table class="table" [ngStyle]="{'display': selectedPopupTab != 1 ? 'none' : ''}">
+                                <colgroup>
+                                    <col width="4%" *ngIf="assign_popup_type == 0">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="9%">
+                                    <col width="10%">
+                                    <col width="6%">
+                                    <col width="10%">
+                                    <col width="9%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th *ngIf="assign_popup_type == 0"></th>
+                                        <th>업체명</th>
+                                        <th>소재지</th>
+                                        <th>업체전화</th>
+                                        <th>주요서비스</th>
+                                        <th>담당자</th>
+                                        <th>담당업무</th>
+                                        <th>담당자연락처</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of partnerUserList; let i = index">
+                                        <td *ngIf="assign_popup_type == 0">
+                                            <input type="checkbox" (change)="dutySelectChanged($event, item)">
+                                        </td>
+                                        <td>{{item.dept_nm}}</td>
+                                        <td>{{item.company_addr}}</td>
+                                        <td>{{item.company_tel}}</td>
+                                        <td>{{item.service_txt}}</td>
+                                        <td>{{item.user_nm}}</td>
+                                        <td>{{item.role_nm}}</td>
+                                        <td>{{item.cp_no}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</ng-template>
+
+<!-- 리뷰 상세모달-->
+<ng-template #contentModal1 let-c="close" let-d="dismiss">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">리뷰 상세보기</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">            
+                    <div class="form-group d-flex">
+                        <div class="category1">
+                            <div class="item"> 
+                                <div class="table-responsive list-table"> 
+                                    <table class="table">
+                                            <tr>
+                                                <th style="width: 13%">No번호</th>
+                                                <td style="width: 10%">{{total - ((this.page-1) * this.pageSize + index)}}</td>
+                                                <th style="width: 15%">장소번호</th>
+                                                <td style="width: 12%">{{place_no}}</td>
+                                                <th style="width: 12%">평점</th>
+                                                <td style="width: 12%">{{rate_score}}</td> 
+                                                <th style="width: 13%">작성자</th>
+                                                <td style="width: 13%">{{user_nm}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="2" >등록일자</th>
+                                                <td colspan="2" >{{upd_dttm}}</td>
+                                                <th colspan="2" >작성일자</th>
+                                                <td colspan="2" >{{reg_dttm}}</td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: center; margin:auto">리뷰내용</th>
+                                                <td  colspan="7"> {{txt}} </td>
+                                            </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</ng-template>
+
+<!-- 오류신고 상세모달-->
+<ng-template #contentModal2 let-c="close" let-d="dismiss">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">오류신고 상세보기</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">            
+                    <div class="form-group d-flex">
+                        <div class="category1">
+                            <div class="item"> 
+                                <div class="table-responsive list-table"> 
+                                    <table class="table">
+                                            <tr>
+                                                <th style="width: 16%">No번호</th>
+                                                <td style="width: 16%">{{index}}</td>
+                                                <th style="width: 16%">장소번호</th>
+                                                <td style="width: 16%">{{place_no}}</td>
+                                                <th style="width: 16%">작성자</th>
+                                                <td style="width: 16%">{{user_nm}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="4">수정일자</th>
+                                                <td colspan="4">{{reg_dttm}}</td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: center; margin:auto">신고내용</th>
+                                                <td  colspan="7"> {{txt}} </td>
+                                            </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</ng-template>
+
+<!-- 불편신고 상세모달-->
+<ng-template #contentModal3 let-c="close" let-d="dismiss">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">불편신고 상세보기</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">            
+                    <div class="form-group d-flex">
+                        <div class="category1">
+                            <div class="item"> 
+                                <div class="table-responsive list-table"> 
+                                        <table class="table">
+                                                <tr>
+                                                    <th style="width: 12.5%">No번호</th>
+                                                    <td style="width: 12.5%">{{index}}</td>
+                                                    <th style="width: 12.5%">장소번호</th>
+                                                    <td style="width: 12.5%">{{place_no}}</td>
+                                                    <th style="width: 12.5%">처리상태</th>
+                                                    <td style="width: 12.5%">{{proc_state_nm}}</td> 
+                                                    <th style="width: 12.5%">작성자</th>
+                                                    <td style="width: 12.5%">{{user_nm}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="4" >작성일자</th>
+                                                    <td colspan="4" >{{reg_dttm}}</td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                    <th style="text-align: center; margin:auto" >신고내용</th>
+                                                    <td  colspan="7"> {{txt}} </td>
+                                                </tr>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</ng-template>

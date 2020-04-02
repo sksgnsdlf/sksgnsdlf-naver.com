@@ -1,0 +1,55 @@
+<div class="card">
+        <div class="card-body">
+            <div class="search-container">
+                <div class="form-group">
+                    <label class="search-title" style="width: 50px;">행사명</label>
+                    <input name="evenorg_" class="form-control" style="width:350px;" [(ngModel)]="course_nm" (keyup.enter)="filter()">
+            
+                    <label class="search-title">기간</label>
+                    <itsm-calendar-split [(fromDt)]="from_dt" [(toDt)]="to_dt" title="등록일자"></itsm-calendar-split>        
+                    <button type="button" class="btn btn-info" style="margin-right: 34rem;" (click)="filter()">조회</button>
+                    <button type="button" class="btn btn-primary" (click)="goto_add_eventorg_page()">등록</button>
+                </div>
+            </div>
+      <div id="table">
+                <div class="table-responsive list-table"> 
+                    <table class="table">
+                        <colgroup>
+                            <col width="40%">
+                            <col width="20%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width="15%">
+                        </colgroup>
+                        <thead>
+                            <tr style="text-align: center">
+                                <th>행사명</th>
+                                <th>장소</th>
+                                <th>행사구분</th>
+                                <th>시작일시</th>
+                                <th>종료일시</th>
+                                
+                            </tr>   
+                        </thead>
+                        <tbody>
+                            <tr class="highlight" style="text-align: center" *ngFor="let eventrog of eventorg_list;  let i = index" (click)="openDetail(eventrog.course_no, info_nm)" > <!-- -->
+                                <td>{{eventrog.course_nm}}</td> <!-- {{total - ((this.page-1) * this.pageSize + i)}} -->
+                                <td>{{eventrog.install_place}}</td> <!-- {{suggest.subj}}-->
+                                <td>{{eventrog.course_typ_nm}}</td> <!--  -->
+                                <td>{{eventrog.start_dttm}}</td> <!--  -->
+                                <td>{{eventrog.close_dttm}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="list-pagination">
+                        <div class="total-page" style="text-align: right">
+                            총 {{total}} 건, {{totalPage}} 페이지 
+                            <ngb-pagination class="d-flex justify-content-center"  (pageChange)="paging($event)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                            [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+                        </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      

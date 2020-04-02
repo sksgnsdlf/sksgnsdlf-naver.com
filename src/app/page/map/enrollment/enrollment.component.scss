@@ -1,0 +1,222 @@
+@import '../../../../styles.scss';
+.list-table{
+    letter-spacing: -0.06rem;
+    tr th, tr td{
+        text-align: center;
+        border:1px solid $tb-border-color;
+    }
+    tr th{
+        background-color:$tb-col-color;
+    }
+    
+    tbody .highlight:hover{
+        background-color : aqua;
+        // background-color: $tb-hover-color;
+        color: red;
+        cursor:pointer;
+    }
+}
+.radio-btn{
+    cursor:pointer;
+    padding:0.5rem; 
+    margin-right:0.5rem;
+    background-color:$tb-col-color; 
+    border-radius:5px;
+}
+
+
+.category, .quick-menual {
+    border: 1px solid gray;
+    background: white;
+    width: 34.5rem;
+    height: 24rem;
+    float: right;
+    padding: 10px;
+    .item-container {
+        height: 21rem;
+        
+        .item {
+            cursor: pointer;
+            margin: 5px 0px;
+            padding: 0px 5px;
+        }
+
+        .selected {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+}
+
+
+.category1 {
+    border: 1px solid gray;
+    background: white;
+    width: 45rem;
+    height: 45rem;
+    float: right;
+    padding: 10px;
+    .item-container {
+        height: 21rem;
+        
+        .item {
+            cursor: pointer;
+            margin: 5px 0px;
+            padding: 0px 5px;
+        }
+
+        .selected {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+}
+
+
+.add_img_wrap {
+    display: flex;
+    justify-content: space-between;
+    width:8rem;
+    padding-right: 1px;
+    a {
+        display: inline-flex !important;
+        align-items: center !important;
+        border:1px solid $tb-border-color;
+        // margin-right:0.5rem;
+    }
+}
+
+// input:disabled, textarea:disabled {
+//     background-color: rgb(235, 235, 228) !important;
+// }
+
+
+.title {
+    font-weight: bold;
+    color:black;
+    text-align: left;
+}
+
+.row-mb{
+    margin-bottom:1rem;
+}
+
+.on{
+    background-color: #745af2!important;
+    color:white!important;
+    a{ color:white!important; }
+}
+
+.item-container {
+    overflow-y: scroll;
+    height: 5rem;
+}
+
+
+//스위치
+.anil_nepal{padding:20px 0px; width:100%; display:block;}
+.switch {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 100px;
+    height: 30px;
+    padding: 3px;
+    margin: 0 10px 10px 0;
+    background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+    background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+    border-radius: 18px;
+    box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    box-sizing: content-box;
+}
+label {
+    font-weight: inherit;
+}
+input[type=checkbox], input[type=radio] {
+    margin: 4px 0 0;
+
+    line-height: normal;
+      -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+// ------------
+.switch-field {
+	display: flex;
+	// margin-bottom: 36px;
+	overflow: hidden;
+}
+
+.switch-field input {
+	position: absolute !important;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+}
+
+.switch-field label {
+	background-color: #e4e4e4;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 14px;
+	line-height: 1;
+	text-align: center;
+	padding: 8px 16px;
+	// margin-right: -1px;
+	// border: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+	cursor: pointer;
+}
+
+.switch-field input:checked + label {
+	background-color: #a5dc86;
+	box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
+
+/* This is just for CodePen. */
+
+.form {
+	max-width: 600px;
+	font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
+	font-weight: normal;
+	line-height: 1.625;
+	margin: 8px auto;
+	padding: 16px;
+}
+
+h2 {
+	font-size: 18px;
+	margin-bottom: 8px;
+}
+
+// 소분류 모달 사이즈
+/deep/ .customModal .modal-dialog{
+    max-width:35rem!important;
+    .modal-content{
+        width:35rem!important;
+    }
+}
+
+// 담당자 모달 사이즈
+/deep/ .dutyModal .modal-dialog{
+    max-width:63rem!important;
+    .modal-content{
+        width:63rem!important;
+    }
+}

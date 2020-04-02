@@ -1,0 +1,64 @@
+<div class="out">
+  <div class="in"> <!-- style="margin-left: 2rem;" -->
+      <a style="font-size: 3em; text-align: center;">어린이집 신청페이지</a><br><br>
+      <div style="float: right">
+          <!-- <button class="btn btn-primary" style="margin-right:1rem;" (click)="childback()"> 돌아가기</button>
+          <button class="btn btn-danger" style="margin-right:1rem;"  (click)="delete()""> 삭제</button>  -->
+      </div>
+
+      <div class="form-group">
+        <label class="search-title" class="wt10" style="color: red;">어린이집 이름(필수)</label>
+            <input name="faq_question" class="form-control" style="width:43em;" [(ngModel)]="childhome.daycare_nm"> 
+      </div>
+      
+      <div class="form-group">
+        <label class="search-title" class="wt10" >운영상태</label> <!--  style="text-align: center;"-->
+            <select class="form-control wt8" [(ngModel)]="childhome.oper_state">
+            <option value="0">신청</option> <!-- *ngFor="let item of orgList" -->
+            </select>
+      </div>
+
+      <div class="form-group">
+        <label class="search-title" class="wt10">운영자(원장)</label>
+            <input name="faq_question" class="form-control" style="width:10em;" [(ngModel)]="user_nm" readonly>  <!-- 로그인한 아이디의 이름을 넣었다.-->
+            <!-- <input type="hidden" [(ngModel)]="childhome.ceo_user_no"> DB에 값넣기용(운영자(원장)번호) -->
+            <!-- <button class="btn btn-info" style="margin-left:1rem;" >운영자검색</button> (click)="ceo_search(ceo_searchModal)" -->
+      </div>
+
+      <div class="form-group">
+        <label class="search-title" class="wt10" >대표전화</label>
+            <input name="faq_question" class="form-control" style="width:10em;" [(ngModel)]="childhome.tel" >
+      </div>
+      
+      <div class="form-group">
+          <label class="search-title" class="wt10">휴대전화</label>
+          <input name="faq_question" class="form-control" style="width:10em;" [(ngModel)]="cp_no">
+      </div>
+
+      <div class="form-group">
+          <label class="search-title" class="wt10">우편번호</label>
+          <input class="form-control" name="post" type="text" style="width:10em;" [(ngModel)]="childhome.post" />
+          <button type="button" class="btn btn-info" style="margin-left:1rem;" (click)="getPost()" >우편번호 검색</button>
+      </div>
+      
+      <div class="form-group">
+        <label class="search-title" class="wt10">주소</label>
+            <input name="faq_question" class="form-control" style="width:43em;" [(ngModel)]="childhome.addr" >
+            <!-- <button class="btn btn-info" (click)="openMap(mapModal)" style="margin-left:1rem;">지도검색</button> -->
+      </div>
+
+      <div class="form-group">
+        <label class="search-title" class="wt10">상세주소</label>
+            <input name="faq_question" class="form-control" style="width:43em;" [(ngModel)]="childhome.addr2" >
+      </div>
+
+      <div class="form-group">
+          <label class="search-title" class="wt10">지역</label>
+          <select class="form-control wt8" [(ngModel)]="childhome.district_cd"> 
+            <option  *ngFor="let dist of district_nm;" [value]="dist.district_cd">{{dist.district_nm}}</option>
+        </select>
+      </div>
+      
+      <button class="btn btn-success" style="float: right;" (click)="save()" > 신청하기</button>
+  </div>
+</div>

@@ -1,0 +1,178 @@
+ <div class="map_wrap">
+   <!-- 지도 -->
+   <div id="theme_map" style="width:100%;height:100%;position:relative;overflow:hidden;float: right;"></div>
+   <div class="map-form-group">
+    <button class="btn btn-info" style="float: right; margin-right:7.5rem;" (click)="open_sort_List()">정렬순서</button> <!-- (click)="back_themeeenrollment(map_no)" -->
+  </div>
+   <div class="map-form-group">
+      <button class="btn btn-info" style="float: right; margin-right:1rem;" (click)="back_themeeenrollment(map_no)">돌아가기</button>
+    </div>
+   <!-- 디테일 모달 이미지-->
+   <input #menu_marker_line_gon_gpx_image style="display: none;"
+     (change)="menu_marker_line_gon_gpx_checkFileType($event)" type="file">
+   <!-- gpx 호출 / gpxstart 밑에 두니까 maximum call stack size exceeded 오류뜸-->
+   <input #inputFile2 style="display: none;" (change)="checkGpxFile($event)" type="file">
+   <!-- 사진같은건 무조건 미리 호출해야함-->
+   <input #inputFile3 style="display: none;" (change)="checkFileType3($event)" type="file">
+   <input #inputFile4 style="display: none;" (change)="checkFileType4($event)" type="file">
+
+   <div class="gpx_div1">
+     <a class="toolbox_a" (click)="selectOverlay('MARKER')">
+       <span class="marker_span"
+         style="background-image: url(&quot;http://i1.daumcdn.net/localimg/localimages/07/mapjsapi/toolbox.png&quot;)"></span>
+     </a>
+     <a class="toolbox_a" (click)="selectOverlay('POLYLINE')">
+       <span class="polyline_span"
+         style="background-image: url(&quot;http://i1.daumcdn.net/localimg/localimages/07/mapjsapi/toolbox.png&quot;)"></span>
+     </a>
+     <a class="toolbox_a" (click)="selectOverlay('POLYGON')">
+       <span class="polygon_span"
+         style="background-image: url(&quot;http://i1.daumcdn.net/localimg/localimages/07/mapjsapi/toolbox.png&quot;)"></span>
+     </a>
+     <a class="toolbox_a" (click)="gpxstart('GPX')">
+       <span class="gpx_span" style="font-weight: bold">GPX</span>
+     </a>
+   </div>
+   <!-- 검색리스트 -->
+   <div id="menu_wrap" class="bg_white">
+     <div class="option">
+       <div>
+         키워드 : <input type="text" id="keyword" size="19" (keyup.enter)="searchPlaces()">
+         <button type="submit" (click)="searchPlaces()" style="float: right;">검 색</button>
+       </div>
+       <div style="float: left;">
+        <select name="list_use_yn" [(ngModel)]="list_use_yn">
+          <option value='1'>사용중</option>
+          <option value='0'>미사용중</option>
+        </select>
+        <button (click)="getPlaceList()" >조 회</button> <!-- style="margin-top: 0px;"-->
+       </div><br>
+     </div>
+     <hr>
+     <!-- 메뉴 리스트-->
+     <div *ngIf="places_List"> <!-- id="search_menu" style="margin-top: 60px; margin-left: 0px;"-->
+       <ul id="placesList" *ngFor="let themelist of place_list; let i = index">
+         <li class="item" (click)="mapMove_overlay(themelist);">
+           <div class="info">
+             <h5>{{i+1}} . {{themelist.place_disp}}</h5>
+             <span>{{themelist.address}}</span>
+           </div>
+         </li>
+       </ul>
+     </div>
+   </div>
+   <!-- 검색 리스트-->
+   <div *ngIf="search_check" id="search_menu" class="bg_white" style="margin-top: 60px;">
+    <ul *ngFor="let item of searchdata">
+      <li class="item" (click)="mapMove(item); search_place_chance()">
+        <div class="info">
+          <h5>{{item.place_name}}</h5>
+          <span>{{item.address_name}}</span>
+          <span class="tel">{{item.phone}}</span>
+        </div>
+      </li>
+      <hr>
+    </ul>
+  </div>
+   <!-- 정렬 리스트-->
+   <div id="sort_wrap" class="bg_white" *ngIf="sort_List"> 
+    <div class="option">
+       <div>
+        <button type="submit" (click)="close_sort_List()" style="float: right;">취소</button>
+        <button type="submit" (click)="sort_save()" style="float: right;">저장</button>
+        <button type="submit" (click)="sort_Forward()" style="float: left;">▲</button>
+        <button type="submit" (click)="sort_Backward()" style="float: left;">▼</button>
+       </div>
+    </div><br>
+      <ul id="placesList" *ngFor="let theme of place_list; let i = index">
+        <li class="item">
+          <div class="info" (click)="sort_start(i);" [ngStyle]="{backgroundColor : i == nowThemeindex?'#00ff99':''}">
+            <h5>{{i+1}} | {{theme.place_disp}}</h5> <!--  <input type="radio" name="sort" style="float:right" (click)="sort_start(i);" >-->
+            <span>{{theme.address}}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+ </div>
+
+ <ng-template #modalContent let-c="close" let-d="dismiss">
+   <div class="modal-header align-items-center">
+     <h4 class="modal-title" id="modal-basic-title">지도 등록</h4>
+     <div class="form-group" style="margin:0">
+       <button type="button" class="btn btn-inverse" (click)="themeDelete()">삭제</button>
+       <button type="button" class="btn btn-inverse" style="margin-left:1rem;" (click)="modal_close()">닫기</button>
+     </div>
+   </div>
+   <div class="modal-body" id="menu_marker_line_gon_gpx">
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="search-title" style="width:60px; margin-right:1rem; color: red;">제목</label>
+                    <input class="form-control" type="text" style="width:38.56em; margin-right:1rem;" [(ngModel)]="edit_item.place_disp">
+                </div>
+
+                <div class="form-group" style="display: flex">
+                    <label class="search-title" style=" width:60px; margin-right:1rem;">썸네일</label>
+                    <div class="menu_add_img_wrap">
+                        <a>
+                        <img class="image_size" *ngIf="edit_item.img_url" [src]="edit_item.img_url">
+                        </a>
+                        <div class="input-group-append" style="float: right;" *ngIf="edit_item.img_url && is_editable"
+                        (click)="menu_marker_line_gon_gpx_deleteFile(0)">
+                        <button type="button" class="btn btn-info" style="width: 60px; height: 185.6px; font-size:18px;"
+                            type="button">삭제</button>
+                        </div>
+                        <div class="input-group-append" style="float: right;" *ngIf="!edit_item.img_url"
+                        (click)="menu_marker_line_gon_gpx_openFile()">
+                        <button type="button" class="btn btn-info" style="width: 60px; height: 185.6px; font-size:18px; ">
+                            추가</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex">
+                  <label class="search-title" style="width:77px;">내용</label>
+                  <itsm-ckeditor name="place.txt" [ngStyle]="{'display': 'block'}" style="width:630px" [(ngModel)]="edit_item.txt">
+                  </itsm-ckeditor>
+                </div>
+                <div class="form-group" style="display: flex">
+                  <label class="search-title" style="width:77px;">사용유무</label>
+                  <input type="radio" name="place.oper_state" value="1" [(ngModel)]="edit_item.use_yn">&nbsp; 사용
+                  <input type="radio" name="place.oper_state" value="0" [(ngModel)]="edit_item.use_yn" style="margin-left:1rem;">&nbsp; 미사용
+                </div>
+                <div class="d-flex">
+                  <label for="image">마커이미지
+                    <a (click)="openFile3()" class="ml-2">
+                      <img src="assets/images/add_person_ico.gif" alt="">
+                    </a>
+                  </label>
+                  <div class="flex-grow-1 text-center">
+                    <div (click)="openFile3()" class="d-inline-block border" style="width: 77px; height: 77px;">
+                      <img *ngIf="edit_item.marker_img3||image3" style="width: 100%; height: 100%;" [src]="edit_item.marker_img3?edit_item.marker_img3:image3" >
+                    </div>
+                    <input #inputFile3 style="display: none;" (change)="checkFileType3($event)" type="file" name="image3">
+                    <img class="float-right" (click)="clearimg3()" src="assets/images/delete_ico.png" alt="">
+                  </div>
+              </div>
+              <div class="d-flex">
+                  <label for="image">마커이미지
+                    <a (click)="openFile4()" class="ml-2">
+                      <img src="assets/images/add_person_ico.gif" alt="">
+                    </a>
+                  </label>
+                  <div class="flex-grow-1 text-center">
+                    <div (click)="openFile4()" class="d-inline-block border" style="width: 77px; height: 77px;">
+                      <img *ngIf="edit_item.marker_img4||image4" style="width: 100%; height: 100%;" [src]="edit_item.marker_img4?edit_item.marker_img4:image4" >
+                    </div>
+                    <input #inputFile4 style="display: none;" (change)="checkFileType4($event)" type="file" name="image4">
+                    <img class="float-right" (click)="clearimg4()" src="assets/images/delete_ico.png" alt="">
+                  </div>
+              </div>             
+              <div *ngIf="edit_item.type!='marker'">
+                <label class="search-title" style="width:60px; margin-right:1rem;">컬러</label>
+                <input type="color" [(ngModel)]="edit_item.figure_color" (change)="color(map_color)"/>
+              </div><br><br>
+              <div style="text-align: center; ">
+                <button type="button" class="btn btn-inverse" style="margin-left: 55px;" (click)="mapsave()">저장</button>
+              </div>
+            </div>
+          </div>
+ </ng-template>

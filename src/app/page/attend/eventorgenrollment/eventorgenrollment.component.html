@@ -1,0 +1,390 @@
+<div class="card">
+        <div class="card-body">   
+            <div style="float: right">
+                <button class="btn btn-primary" style="margin-right:1rem;" (click)="eventorgback()"> 돌아가기</button>
+                <button class="btn btn-danger" style="margin-right:1rem;" (click)="delete()"> 삭제</button> 
+                <button class="btn btn-success" style="margin-right:1rem;" (click)="save()" > 저장</button> 
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt8">기관단체명</label>
+                  <input name="faq_question" class="form-control" style="width:50em;" [(ngModel)]="org_nm" readonly> 
+            </div>
+            
+            <div class="form-group">
+              <label class="search-title" class="wt8" style="color: red;">행사명(필수)</label>
+                  <input name="faq_question" class="form-control" style="width:50em;" [(ngModel)]="eventorg.course_nm"  >
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt8">행사장소 주소</label>
+                  <input name="faq_question" class="form-control" style="width:40em;" [(ngModel)]="eventorg.addr"> 
+                  <button class="btn btn-info" (click)="openMap(mapModal)" style="margin-left:1rem;">지도검색</button>  
+            </div>
+
+            <div class="form-group">
+              <label class="search-title" class="wt8"style="color: red;">행사장소명(필수)</label>
+                  <input name="faq_question" class="form-control" style="width:40em;" [(ngModel)]="eventorg.install_place" >
+            </div>
+            
+            <div class="form-group">
+                <label class="search-title" class="wt8">행사지역</label>
+                <select class="form-control wt8" [(ngModel)]="eventorg.district_cd"> 
+                    <option  *ngFor="let dist of district_nm;" [value]="dist.district_cd">{{dist.district_nm}}</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="search-title" class="wt8">행사종류</label>
+              <select class="form-control wt8" [(ngModel)]="eventorg.course_typ">
+                  <option *ngFor="let cou_typ of course_typ;" [value]="cou_typ.code">{{cou_typ.name}}</option>
+              </select>
+            </div>
+      
+            <div class="form-group">
+              <label class="search-title" class="wt8" style="color: red;" >행사기간(필수)</label>
+              <button class="btn btn-outline-secondary" (click)="d1.close();d1.toggle()" type="button">
+                    <i class="fa fa-calendar"></i>
+              </button>
+              <input type="text" class="form-control" style="width:8.2%" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="onDateSelectionStart($event)" placeholder="yyyy-mm-dd" [(ngModel)]="start_dttm_parse" /> 
+              <input type="time" class="form-control" style="width:9.5%" [(ngModel)]="start_dttm_hms">
+              -
+              <button class="btn btn-outline-secondary" (click)="d2.close();d2.toggle()" type="button">
+                    <i class="fa fa-calendar"></i>
+              </button>
+              <input type="text" class="form-control" style="width:8.2%" ngbDatepicker #d2="ngbDatepicker" (dateSelect)="onDateSelectionClose($event)" placeholder="yyyy-mm-dd" [(ngModel)]="close_dttm_parse"/>
+              <input type="time" class="form-control" style="width:9.5%" [(ngModel)]="close_dttm_hms">
+            </div>
+
+            <div class="form-group">
+                <label class="search-title" class="wt8">입퇴장 체크</label>
+                <select class="form-control wt8" [(ngModel)]="eventorg.inout_chk"> 
+                    <option value="1">입ㆍ퇴장</option>
+                    <option value="2">입장</option>
+                </select>
+            </div>
+      
+            <div class="form-group">
+                <label class="search-title" class="wt8" >입장허용시간</label>
+                    <input type="time" class="form-control" style="width:9.5%" name="open_time_first" [(ngModel)]="open_time_first">
+                    ~
+                    <input type="time" class="form-control" style="width:9.5%" name="open_time_last" [(ngModel)]="open_time_last">
+            </div>
+      
+            <div class="form-group" *ngIf="eventorg.inout_chk =='1'">   <!-- 입퇴장일때만 퇴장보여주게함-->
+                <label class="search-title" class="wt8" >퇴장허용시간</label>
+                    <input type="time" class="form-control" style="width:9.5%" name="close_time_first" [(ngModel)]="close_time_first" >
+                    ~
+                    <input type="time" class="form-control" style="width:9.5%" name="close_time_last" [(ngModel)]="close_time_last" >
+            </div>
+            <div class="form-group">
+            <label class="search-title" class="wt8">비콘사용</label>
+                <input type="radio" id="beacon1" name="beacon" value="1" [(ngModel)]="eventorg.use_beacon"/>
+                <label for="beacon1" style="margin-right: 10px;"><span></span>사용</label>
+                <input type="radio" id="beacon2" name="beacon" value="0" [(ngModel)]="eventorg.use_beacon"/>
+                <label for="beacon2" style="margin-right: 10px;"><span></span>미사용</label>
+            </div>
+            <div class="d-flex flex-row row-mb align-items-center" *ngIf="eventorg.use_beacon =='1'">
+                <label class="search-title" class="wt8">비콘장치</label>
+                  <div> 
+                    <div class="table-responsive list-table" style="height:15rem;">
+                        <table style="text-align: center; ">
+                        <!-- <input #inputFile style="display: none;" (change)="checkFileType($event)" type="file"> -->
+                        <thead>
+                            <tr>
+                                <th style="width: 100px">장치번호</th>
+                                <th style="width: 150px">UUID</th>
+                                <th style="width: 150px">맥어드레스</th>
+                                <th style="width: 50px">삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let beacon of beacon_list; let i = index;">
+                            <td > {{beacon.beacon_no}}</td>  
+                            <td > {{beacon.uuid}}</td>  
+                            <td > {{beacon.mac_addr}}</td> 
+                                <td>
+                                    <a *ngIf="beacon_list" (click)="deleteRow(i);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                  </div>
+                <button class="btn btn-dark" style="float: right; margin-left:1rem; margin-top: -2rem" (click)="openAsgnPopup1(beaconModal, 0, 0)">비콘등록</button> 
+                <div>
+                </div>        
+            </div>
+      
+            <div class="form-group">
+                <label class="search-title" class="wt8" style="margin-top: 30px;">NFC사용</label>
+                    <input type="radio" id="nfc1" name="nfc" value="1" [(ngModel)]="eventorg.use_nfc"/>
+                    <label for="nfc1" style="margin-right: 10px;"><span></span>사용</label>
+                    <input type="radio" id="nfc2" name="nfc" value="0" [(ngModel)]="eventorg.use_nfc"/>
+                    <label for="nfc2" style="margin-right: 10px;"><span></span>미사용</label>
+            </div>
+
+            <div class="d-flex flex-row row-mb align-items-center" *ngIf="eventorg.use_nfc =='1'">
+                <label class="search-title" class="wt8">NFC카드</label>
+                    <div> 
+                        <div class="table-responsive list-table" style="height:10rem;">
+                            <table style="text-align: center; ">
+                            <!-- <input #inputFile style="display: none;" (change)="checkFileType($event)" type="file"> -->
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px">장치번호</th>
+                                    <th style="width: 150px">태그번호</th>
+                                    <th style="width: 50px">삭제</th>
+                                </tr>
+                            </thead>
+                        <tbody>
+                                <tr *ngFor="let nfc of rfid_list;let i = index;">
+                                  <td >{{nfc.rfid_no}}</td>  <!-- {{file.add_name}} -->
+                                  <td >{{nfc.rfid}}</td>  <!-- {{file.add_name}} -->
+                                  <td>
+                                    <a *ngIf="rfid_list" (click)="deleteRow2(i);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                  </td>
+                                </tr>
+                        </tbody>
+                        </table>
+                    </div>               
+                </div>
+                <button class="btn btn-dark" style="float: right; margin-left:1rem; margin-top: -2rem" (click)="openAsgnPopup2(rfidModal, 0, 0)">NFC등록</button> <!-- (click)="fileupload()" -->
+                <div>
+                </div>        
+            </div>
+
+            <div class="form-group">
+                <label class="search-title" class="wt8" style="margin-top: 30px;">QR사용</label>
+                    <input type="radio" id="qr1" name="qr" value="1" [(ngModel)]="eventorg.use_qr"/>
+                    <label for="qr1" style="margin-right: 10px;"><span></span>사용</label>
+                    <input type="radio" id="qr2" name="qr" value="0" [(ngModel)]="eventorg.use_qr"/>
+                    <label for="qr2" style="margin-right: 10px;"><span></span>미사용</label>
+            </div>
+
+            <div class="form-group" *ngIf="eventorg.use_qr =='1'">
+                <label class="search-title" class="wt8">QR코드</label> 
+                <img *ngIf="eventorg.qr_url" [src]="eventorg.qr_url" style="width: 150px; height: 150px;">
+                <button class="btn btn-info" *ngIf="eventorg.qr_url" (click)="downloadUrl(eventorg.qr_url,'notthing')">QR다운로드</button>
+                <!-- <button class="btn btn-info" style="margin-left:1rem;" ng-href="eventorg.qr_url">다운로드</button> -->
+            </div>
+
+    <!-- QR코드 밑부분 -------------------------------------------------------------->
+        </div><br><br>
+        <div class="card" style="margin-top: 50px;">
+            <div class="form-group">      
+              <label class="search-title" class="wt4" style="margin-left: 1rem;">회원명</label>
+              <input name="faq_question" class="form-control" style="width:15em;" [(ngModel)]="search" >
+      
+              <button type="button" class="btn btn-info" style="margin-left: 1rem;" (click)="filter()">조회</button>
+      
+              <button type="button" class="btn btn-secondary" style="float: right; margin-left: 1rem;" (click)="excel()">엑셀저장</button> 
+              <button type="button" class="btn btn-dark" style="float: right; margin-left: 1rem;" (click)="attenrollbutton()">출결등록</button>
+            </div>
+      
+            <!-- 테이블 -->
+            <div id="table">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive list-table"> 
+                            <table class="table">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="35%">
+                                    <col width="35%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                    <tr style="text-align: center">
+                                        <th>회원이름</th>
+                                        <th>회원전화번호</th>
+                                        <th>입장시간</th>
+                                        <th>퇴장시간</th>
+                                        <th>삭제</th>
+                                    </tr>   
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight" style="text-align: center" *ngFor="let user of userdata; let i = index;" (click)="user_detail(user); attenrollbutton()"> <!-- let i = index" (click)="openDetail(suggest.suggest_no)"  -->
+                                        <td>{{user.attend_user_nm}}</td>
+                                        <td>{{user.attend_cp_no}}</td>
+                                        <td>{{user.in_time}}</td>
+                                        <td>{{user.out_time}}</td>
+                                        <td>
+                                            <a *ngIf="userdata" (click)="userdelete(user);"><img src="assets/images/sub/delete_ico.png" alt="휴지통"></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="list-pagination">
+                                <div class="total-page" style="text-align: right">
+                                    총 {{total}} 건, {{totalPage}} 페이지 
+                                    <ngb-pagination class="d-flex justify-content-center"  (pageChange)="paging($event)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                                    [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      
+            <div class="form-group" *ngIf="attendenrollment">
+                <table style="margin-left:auto; margin-right: auto; border: 1px solid; width: 510px;">
+                    <tr style="border-bottom:1px solid;" >
+                        <td colspan="2"><span style="font-size:1.7em;">출결등록</span>
+                            <span style="float: right; font-size: 2rem;" (click)="attenrollclose()">×</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 30px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">이름</td>
+                        <td><input type="text" class="form-control" style="width: 190px;" [(ngModel)]="attend_user_nm"></td> 
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">휴대번호</td>
+                        <td><input type="text" class="form-control" style="width: 190px;"  [(ngModel)]="attend_cp_no"></td>  
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">구분</td>
+                        <td>
+                            <input type="radio" id="r1" name="rr" value="1" [(ngModel)]="dvsn"/>
+                            <label for="r1" style="margin-right: 10px;"><span></span>입장</label>
+                            <input type="radio" id="r2" name="rr" value="2" [(ngModel)]="dvsn"/>
+                            <label for="r2"><span></span>퇴장</label>
+                        </td>
+                    </tr>
+                    <tr *ngIf="dvsn==1"  >
+                        <td style="text-align: center;">입장시간</td>
+                        <!-- <td><input type="text" class="form-control" style="width: 220px;" [(ngModel)]="record_dttm" placeholder="yyyy-mm-dd hh:mm:ss" ></td> -->
+                        <td>
+                            <button class="btn btn-outline-secondary" (click)="d1.close();d1.toggle()" type="button">
+                            <i class="fa fa-calendar"></i>
+                            </button>
+                            <input type="text" class="form-control" style="width:30%" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="onDateSelectionin_out($event)" placeholder="yyyy-mm-dd" [(ngModel)]="record_dttm_parse" /> 
+                            <input type="time" class="form-control" style="width:40%" [(ngModel)]="record_dttm_hms" step="1"> <!-- step -> 초단위 -->
+                        </td>
+                    </tr>
+                    <tr *ngIf="dvsn==2">
+                        <td style="text-align: center;">퇴장시간</td>
+                        <!-- <td><input type="text" class="form-control" style="width: 220px;" [(ngModel)]="record_dttm"  placeholder="yyyy-mm-dd hh:mm:ss" ></td> -->
+                        <td>
+                            <button class="btn btn-outline-secondary" (click)="d1.close();d1.toggle()" type="button">
+                            <i class="fa fa-calendar"></i>
+                            </button>
+                            <input type="text" class="form-control" style="width:30%" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="onDateSelectionin_out($event)" placeholder="yyyy-mm-dd" [(ngModel)]="record_dttm_parse" /> 
+                            <input type="time" class="form-control" style="width:40%" [(ngModel)]="record_dttm_hms" step="1"> <!-- step -> 초단위 -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                        <button type="button" class="btn btn-success" style="float: right; margin-left: 0.5rem;" (click)="userpost()">저장</button>
+                        <button type="button" class="btn btn-warning" style="float: right; margin-left: 0.5rem;" (click)="userreset()">초기화</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+      </div>
+
+<!-- 지도 모달 -->
+<ng-template #mapModal let-c="close" let-d="dismiss">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">지도에서 찾기</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card" style="margin:0">
+                <div class="card-body">
+                    <div id="map" style="width:100%; height:400px;"></div>
+                    <div class="d-flex flex-row" style="margin-top:1rem">
+                        <div class="form-group d-flex flex-row" style="margin:0">
+                            <input class="form-control wt20" type="text" [(ngModel)]="search_map" (keyup.enter)="searchAddressToCoordinateInput()">
+                            <button class="btn btn-info" style="margin-left:0.5rem" (click)="searchAddressToCoordinateInput()">검색</button>
+                        </div>
+                        <div class="form-group d-flex flex-row ml-auto" style="margin:0">
+                            <button class="btn btn-info" (click)="d('select clicked')">선택</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</ng-template>
+
+<!-- 비콘장치 추가모달-->
+<ng-template #beaconModal let-c="close" let-d="dismiss" id="id">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">비콘장치 리스트</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+                <div class="card" style="margin:0">
+                    <div class="card-body">             
+                        <div class="form-group d-flex">
+                            <div class="nfccategory">
+                                <div class="item-container2">
+                                    <table class="table">
+                                            <thead>
+                                            <th></th>
+                                            <th>단말번호</th>
+                                            <th>MAC</th>
+                                            <!-- <th></th> -->
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let item of beacons" style="cursor: pointer;">
+                                                <td><input type="checkbox" (change)="userSelectChanged1($event, item)"></td>
+                                                <td>{{item.beacon_no}}</td>
+                                                <td>{{item.mac_addr}}</td>
+                                            </tr>
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</ng-template>
+
+
+<!-- rfid(nfc)장치 추가모달-->
+<ng-template #rfidModal let-c="close" let-d="dismiss" id="id">
+        <div class="modal-header align-items-center">
+            <h4 class="modal-title" id="modal-basic-title">비콘장치 리스트</h4>
+            <div class="form-group" style="margin:0">
+                <button type="button" class="btn btn-inverse" (click)="d('Cross click')">닫기</button>
+            </div>
+        </div>
+        <div class="modal-body">
+                <div class="card" style="margin:0">
+                    <div class="card-body">             
+                        <div class="form-group d-flex">
+                            <div class="nfccategory">
+                                <div class="item-container2">
+                                    <table class="table">
+                                            <thead>
+                                            <th></th>
+                                            <th>단말번호</th>
+                                            <th>MAC</th>
+                                            <!-- <th></th> -->
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let item of rfid" style="cursor: pointer;"> <!--  click)="select(item)"-->
+                                                <td><input type="checkbox" (change)="userSelectChanged2($event, item)"></td>
+                                                <td>{{item.rfid_no}}</td>
+                                                <td>{{item.rfid}}</td>
+                                            </tr>
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</ng-template>

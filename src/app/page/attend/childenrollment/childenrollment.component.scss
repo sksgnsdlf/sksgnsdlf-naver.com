@@ -1,0 +1,116 @@
+@import '../../../../styles.scss';
+.list-table{
+    letter-spacing: -0.06rem;
+    tr th, tr td{
+        text-align: center;
+        border:1px solid $tb-border-color;
+    }
+    tr th{
+        background-color:$tb-col-color;
+    }
+    
+    tbody .highlight:hover{
+        background-color: $tb-hover-color;
+        cursor:pointer;
+    }
+}
+
+.category, .quick-menual {
+    // border: 1px solid gray;
+    background: white;
+    width: 35rem;
+    height: 9.1rem;
+    float: right;
+    padding: 10px;
+    .item-container {
+        overflow-y: scroll;
+        height: 8.1rem;
+        
+        .item {
+            cursor: pointer;
+            margin: 5px 0px;
+            padding: 0px 5px;
+        }
+
+        .selected {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+}
+
+// 태그ID 검색
+.rfidsearch{
+    background:#158B85;
+    color:#ff0;
+    border:none;
+    position:relative;
+    height:35px;
+    font-size:1em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+    margin-left: 10px;
+}
+.rfidsearch:hover{
+    background:#ff0;
+    color:#158B85;
+}
+.rfidsearch:before,button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #158B85;
+    transition:400ms ease all;
+}
+.rfidsearch:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+.rfidsearch:hover:before, .rfidsearch:hover:after{
+    width:100%;
+    transition:800ms ease all;
+}
+
+// 보호자 검색
+.parentsearch{
+    background:#018BF5;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:35px;
+    font-size:1em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+    margin-left: 10px;
+}
+.parentsearch:hover{
+    background:#fff;
+    color:#018BF5;
+}
+.parentsearch:before,button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #018BF5;
+    transition:400ms ease all;
+}
+.parentsearch:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+.parentsearch:hover:before, .parentsearch:hover:after{
+    width:100%;
+    transition:800ms ease all;
+}

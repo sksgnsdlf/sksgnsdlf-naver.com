@@ -1,0 +1,104 @@
+<div>
+        <div class="card">
+            <div class="card-body" >
+                <div class="form-group">
+                    <button class="btn btn-inverse" style="float: right;" (click)="save()">저장</button> 
+                    <button class="btn btn-danger" style="float: right; margin-right:1rem;" (click)="mapdelete()">삭제</button> 
+                    <button class="btn btn-info" style="float: right; margin-right:1rem;" (click)="themeback();">돌아가기</button> 
+                </div>
+                <div class="form-group">
+                    <label class="search-title" class="wt8" style="margin-right:1rem; color: red">테마지도명(필수)</label>
+                    <input class="form-control" type="text" style="width:45em; margin-right:1rem;"[(ngModel)]="theme.map_nm" >
+                    <!-- <button class="btn btn-inverse">지도보기</button>  -->
+                </div>
+                <div class="form-group">
+                    <label class="search-title" class="wt9">테마구분</label>
+                    <select class="form-control wt10" style="margin-right:1rem; " [(ngModel)]="theme.cls_cd">
+                        <option *ngFor="let code of themecode;" [value]="code.id" style="width: 100px">{{code.name}}</option> <!--   --> <!-- {{lv1item.cls_nm}}-->
+                    </select>
+                </div>
+                <div class="form-group">
+                        <div class="d-flex flex-row row-mb">
+                                <div class="wt9 title">이미지</div>
+                                <div class="w445">
+                                    <div class="add_img_wrap">
+                                        <input #inputFile1 style="display: none;" (change)="checkFileType($event)" type="file">
+                                        <!-- inpustFile2는 GPX 확인하는 부분(여기 table과 관련없음 / 카카오맵에서 gpx버튼과 관련있다.) -->
+                                        <input #inputFile2 style="display: none;" (change)="checkGpxFile($event)" type="file"> 
+                                        <!-- 메뉴판 이미지-->
+                                        <input #menu_marker_line_gon_gpx_image style="display: none;" (change)="menu_marker_line_gon_gpx_checkFileType($event)" type="file">
+                                        <a style="width: 200px; height: 200px; overflow: hidden;">
+                                            <img style="width: 100%;" *ngIf="picList[0]" [src]="picList[0]" (click)="selectedImg = picList[0]">
+                                        </a>
+                                        <div class="input-group-append" *ngIf="picList[0] && is_editable" (click)="deleteFile(0)">
+                                        <button class="btn btn-info" type="button"><i class="icon-trash"></i></button>
+                                    </div>
+                                        <button class="btn btn-info" style="width: 60px;" *ngIf="picList.length < 1 && is_editable" (click)="openFile()" ><i class="icon-plus"></i></button>
+                                    </div>
+                                    <div class="img-container" *ngIf="selectedImg">
+                                        <div class="x_btn" (click)="selectedImg = ''">
+                                            닫기 X
+                                        </div>
+                                        <img style="display: block; margin: 10px auto; width: 100%;" [src]="selectedImg">
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+                <div class="form-group">
+                    <label for="typeahead-basic" class="wt9 title">사용여부</label>
+                    <select class="form-control wt8"  [(ngModel)]="theme.use_yn"> 
+                        <option value="1">사용</option>
+                        <option value="0">미사용</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="typeahead-basic" class="wt9 title">내용</label>
+                    <itsm-ckeditor name="place.txt" [ngStyle]="{'display': 'block'}" [(ngModel)]="theme.txt" ></itsm-ckeditor> 
+                </div>
+                <div class="form-group">
+                    <label class="search-title" class="wt8 title" style="margin-right:1rem;">링크 URL</label>
+                    <input class="form-control" type="text" style="width:60em; margin-right:1rem;" [(ngModel)]="theme.link_url">
+                </div>
+                <div class="form-group">
+                    <label class="search-title" class="wt8 title" style="margin-right:1rem;">지도 구성</label>
+                    <!-- <button class="btn btn-info" style="margin-right:1rem;">장소 편집</button> -->
+                    <button *ngIf="mapopen" class="btn btn-info" style="margin-right:1rem;" (click)="themeEditOpen(no.map_no)" disabled="false;">장소 편집</button>
+                    <button *ngIf="mapclose"  class="btn btn-info" style="margin-right:1rem;" (click)="themeEditOpen(no.map_no)" >장소 편집</button>
+                </div>
+    
+                <div class="table-responsive list-table"> 
+                    <div class="item-container2">
+                        <table class="table">
+                            <colgroup>
+                                <col width="7%">
+                                <col width="22%">
+                                <col width="59%">
+                                <col width="7%">
+                                <col width="5%">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>장소명</th>
+                                    <th>주소</th>
+                                    <th>분류</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight" style="text-align: center" *ngFor="let themelist of place_list; let i = index" >
+                                    <td>{{i+1}}</td>
+                                    <td>{{themelist.place_disp}}</td>
+                                    <td>{{themelist.addr1}}</td>
+                                    <td>{{themelist.place_figure_nm}}</td>
+                                    <td><button (click)="delete1(themelist);">삭제</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    

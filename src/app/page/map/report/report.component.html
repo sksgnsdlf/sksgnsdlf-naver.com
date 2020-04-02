@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-3" > 
+            <div class="card" style="min-width: 316%;   height: 100px;" >
+                <div class="card-body">
+                    <select class="form-control wt8"  [(ngModel)]="lev1Index" style="margin-right:1rem;"  >
+                        <option *ngFor="let lv1item of data; let i = index;" [value]="i" >
+                            {{lv1item.cls_nm}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <itsm-tree-view [data]="data[lev1Index].lv2" [searchShow]="false" (OnClick)="select(2,$event)"></itsm-tree-view>
+    </div>
+    <div class="col-6" >
+        <div class="card" >
+            <div class="card-body">
+              <form #clsForm1="ngForm" (ngSubmit)="save()" >
+                  <h3>{{lv2_cls_nm}}</h3>
+                <div class="table-responsive list-table" style="text-align: center"> 
+                    <table class="table" >
+                    <colgroup>
+                        <col width="15%">
+                        <col width="75%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>순서</th>
+                            <th>신고 항목</th>
+                            <th>버튼</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        <ng-container *ngFor="let item of list;" >
+                        <tr>
+                            <td style="text-align: center">{{item.disp_ord}}</td>
+                            <td style="text-align: center">{{item.report_txt}}</td>
+                            <td><input type="radio" name="choose" id="choose" (click)="Detail(item)"></td>
+                        </tr>
+                        </ng-container>
+                    </tbody>
+                    </table>
+                </div> 
+                <div>
+                <label style="margin-left: 1rem; margin-right: 1rem;">신고항목</label>
+                <input name = "report_txt" class="form-control" type="text" style="width:86%;" [(ngModel)]="item.report_txt"> <br> 
+                <label style="margin-left: 1rem; margin-right: 1rem; margin-top: 1rem" >표시순서</label>
+                <input name = "disp_ord" class="form-control" type="text" style="width:10%;" [(ngModel)]="item.disp_ord"> 
+                </div>
+                    <!-- 버튼 -->  
+                    <button *ngIf="addcheck" type="button" style="margin-right: 5px;" class="btn btn-inverse float-right" (click) = add();>분류추가</button>
+                    <button *ngIf="savecheck" type="submit" style="margin-right: 5px;" class="btn btn-info float-right" >저장</button>
+                    <button *ngIf="savecheck" type="button" style="margin-right: 5px;" class="btn btn-danger float-right" (click) = delete();>삭제</button>
+                    <button *ngIf="savecheck" type="button" style="margin-right: 5px;" class="btn btn-inverse float-right" (click) = cancel();>취소</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

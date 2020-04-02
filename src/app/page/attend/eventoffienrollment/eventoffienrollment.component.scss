@@ -1,0 +1,126 @@
+@import '../../../../styles.scss';
+.list-table{
+    letter-spacing: -0.06rem;
+    tr th, tr td{
+        text-align: center;
+        border:1px solid $tb-border-color;
+    }
+    tr th{
+        background-color:$tb-col-color;
+    }
+    
+    tbody .highlight:hover{
+        background-color: $tb-hover-color;
+        cursor:pointer;
+    }
+}
+
+.category, .quick-menual {
+    // border: 1px solid gray;
+    background: white;
+    width: 35rem;
+    height: 9.1rem;
+    float: right;
+    padding: 10px;
+    .item-container {
+        overflow-y: scroll;
+        height: 8.1rem;
+        
+        .item {
+            cursor: pointer;
+            margin: 5px 0px;
+            padding: 0px 5px;
+        }
+
+        .selected {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+}
+
+.nfccategory, .quick-menual {
+    border: 1px solid gray;
+    background: white;
+    width: 34.5rem;
+    height: 30rem;
+    float: right;
+    padding: 10px;
+    .item-container2 {
+        overflow-y: scroll;
+        height: 29rem;
+        
+        .item {
+            cursor: pointer;
+            margin: 5px 0px;
+            padding: 0px 5px;
+        }
+
+        .selected {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+}
+
+// 출결 이름검색
+.usersearch{
+    background:#1AAB8A;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:37px;
+    font-size:1em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+    margin-left: 10px;
+}
+.usersearch:hover{
+    background:#fff;
+    color:#1AAB8A;
+}
+.usersearch:before,button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #1AAB8A;
+    transition:400ms ease all;
+}
+.usersearch:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+.usersearch:hover:before, .usersearch:hover:after{
+    width:100%;
+    transition:800ms ease all;
+}
+  
+// 라디오버튼
+input[type="radio"] {
+    display:none;
+}
+
+input[type="radio"] + label {
+    color:black;
+    font-family:Arial, sans-serif;
+}
+
+input[type="radio"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-2px 5px 0 0;
+    vertical-align:middle;
+    background:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/check_radio_sheet.png) -38px top no-repeat;
+    cursor:pointer;
+}
+
+input[type="radio"]:checked + label span {
+    background:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/check_radio_sheet.png) -57px top no-repeat;
+}

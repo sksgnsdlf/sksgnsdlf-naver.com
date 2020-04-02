@@ -1,0 +1,62 @@
+<div class="search-container">
+    <div class="form-group">
+        <label class="search-title" class="wt5" style="margin-left: -0.5rem">제목+내용</label>
+        <input class="form-control" type="text" style="width:29em;" [(ngModel)]="subj" (keyup.enter)="filter()">
+    </div>
+    <div class="form-group">
+        <label for="typeahead-basic" class="wt4">게시상태</label>
+        <div class="option-container">
+            <select class="form-control" style="width:100px;" [(ngModel)]="state" (change)="filter()">
+            <option value="" >전체</option>
+            <option value="1">사용</option>
+            <option value="2">미사용</option>
+            </select>
+        </div>
+    </div>
+    <button type="button" class="btn btn-info" style="margin-left:0.5rem; margin-right:45rem;" (click)="filter()">조회</button>
+    <button type="button" class="btn btn-primary" style="margin-left:0.5rem;" (click)="goto_add_notice_page()">등록</button>
+</div>
+<!-- 테이블 -->
+<div id="table">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive list-table"> 
+                <table class="table">
+                    <colgroup>
+                        <col width="7%">
+                        <col width="40%">
+                        <col width="10%">
+                        <col width="23%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>제목</th>
+                            <th>게시상태</th>
+                            <th>등록일자</th>
+                            <th>조회수</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight" style="text-align: center" *ngFor="let notice of notice_list;  let i = index" (click)="openDetail(notice.notice_no)" >
+                            <td>{{total - ((this.page-1) * this.pageSize + i)}}</td>
+                            <td>{{notice.subj}}</td>
+                            <td>{{notice.state == '1' ? '사용' : '미사용'}}</td>
+                            <td>{{notice.reg_dttm}}</td>
+                            <td>{{notice.read_cnt}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="list-pagination">
+                    <div class="total-page" style="text-align: right">
+                        총 {{total}} 건, {{totalPage}} 페이지    <!-- (pageChange)="getList($event)"-->
+                        <ngb-pagination class="d-flex justify-content-center"  (pageChange)="paging($event)" [collectionSize]="collectionSize" [maxSize]="maxPage" 
+                        [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
